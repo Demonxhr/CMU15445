@@ -112,6 +112,7 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
   {
     std::shared_ptr<Bucket> ibptr = std::make_shared<Bucket>(bucket_size_);
     dir_.push_back(ibptr);
+    //num_buckets_++;
   }
   int index = IndexOf(key);
 
@@ -130,6 +131,7 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
     }
     Bptr->IncrementDepth();
     std::shared_ptr<Bucket> ibptr = std::make_shared<Bucket>(bucket_size_,Bptr->GetDepth());
+    num_buckets_++;
     int mask1 = (1 << (Bptr->GetDepth()-1));
     int mask2 = (1 << (Bptr->GetDepth()-1))-1;
     // 重定向dir
@@ -139,6 +141,7 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
       if((i&mask2)==(index&mask2)&&(i&mask1)!=0) 
       {
         dir_[i] = ibptr;
+        
       }
     }
 
@@ -149,6 +152,17 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
     Bptr = dir_[index];
   }
   Bptr->Insert(key,value);
+    //输出数据库
+  for(int i = 0; i < static_cast<int>(dir_.size());++i)
+  {
+    std::cout << i << ": ";
+    std::list<std::pair<K, V>>& list = dir_[i]->GetItems();
+    for(auto &j: list)
+    {
+      std::cout << j.first << " ";
+    }
+    std::cout << std::endl;
+  }
   //UNREACHABLE("not implemented");
 }
 
