@@ -19,36 +19,30 @@
 #include "container/hash/extendible_hash_table.h"
 #include "storage/page/page.h"
 
-
-
 namespace bustub {
 
 template <typename K, typename V>
 ExtendibleHashTable<K, V>::ExtendibleHashTable(size_t bucket_size)
     : global_depth_(0), bucket_size_(bucket_size), num_buckets_(1) {}
 
-
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::RedistributeBucket(std::shared_ptr<Bucket> bucket) -> void {
-  
-  std::list<std::pair<K, V>>& list = bucket->GetItems();
-  
-  for(auto it = list.begin() ; it!=list.end();)
-  {
+  std::list<std::pair<K, V>> &list = bucket->GetItems();
+
+  for (auto it = list.begin(); it != list.end();) {
     auto next = it;
     next++;
     int index = IndexOf((*it).first);
-    if(dir_[index]==bucket){
-      it=next;
+    if (dir_[index] == bucket) {
+      it = next;
       continue;
-    } 
+    }
     std::shared_ptr<Bucket> bptr = dir_[index];
-    bptr->Insert((*it).first,(*it).second);
+    bptr->Insert((*it).first, (*it).second);
     list.erase(it);
     it = next;
   }
 }
-
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::IndexOf(const K &key) -> size_t {
@@ -92,78 +86,67 @@ auto ExtendibleHashTable<K, V>::GetNumBucketsInternal() const -> int {
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Find(const K &key, V &value) -> bool {
   std::unique_lock<std::mutex> lock(latch_);
-  std::shared_ptr<Bucket> Bptr = dir_[IndexOf(key)];
-  return Bptr->Find(key,value);
-  //UNREACHABLE("not implemented");
+  std::shared_ptr<Bucket> bptr = dir_[IndexOf(key)];
+  return bptr->Find(key, value);
+  // UNREACHABLE("not implemented");
 }
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Remove(const K &key) -> bool {
   std::unique_lock<std::mutex> lock(latch_);
-  std::shared_ptr<Bucket> Bptr = dir_[IndexOf(key)];
-  return Bptr->Remove(key);
-  //UNREACHABLE("not implemented");
+  std::shared_ptr<Bucket> bptr = dir_[IndexOf(key)];
+  return bptr->Remove(key);
+  // UNREACHABLE("not implemented");
 }
 
 template <typename K, typename V>
 void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
   std::unique_lock<std::mutex> lock(latch_);
-  if(dir_.empty())
-  {
+  if (dir_.empty()) {
     std::shared_ptr<Bucket> ibptr = std::make_shared<Bucket>(bucket_size_);
     dir_.push_back(ibptr);
-    //num_buckets_++;
+    // num_buckets_++;
   }
   int index = IndexOf(key);
 
-  std::shared_ptr<Bucket> Bptr = dir_[index];
-  while(Bptr->IsFull())
-  {
-
-    if(Bptr->GetDepth()==global_depth_)
-    {
+  std::shared_ptr<Bucket> bptr = dir_[index];
+  while (bptr->IsFull()) {
+    if (bptr->GetDepth() == global_depth_) {
       ++global_depth_;
       int vsize = dir_.size();
-      for(int i = 0; i < vsize;++i)
-      {
+      for (int i = 0; i < vsize; ++i) {
         dir_.push_back(dir_[i]);
       }
     }
-    Bptr->IncrementDepth();
-    std::shared_ptr<Bucket> ibptr = std::make_shared<Bucket>(bucket_size_,Bptr->GetDepth());
+    bptr->IncrementDepth();
+    std::shared_ptr<Bucket> ibptr = std::make_shared<Bucket>(bucket_size_, bptr->GetDepth());
     num_buckets_++;
-    int mask1 = (1 << (Bptr->GetDepth()-1));
-    int mask2 = (1 << (Bptr->GetDepth()-1))-1;
+    int mask1 = (1 << (bptr->GetDepth() - 1));
+    int mask2 = (1 << (bptr->GetDepth() - 1)) - 1;
     // 重定向dir
-    for(int i = index; i < static_cast<int>(dir_.size()) ;++i)
-    {
-      
-      if((i&mask2)==(index&mask2)&&(i&mask1)!=0) 
-      {
+    for (int i = index; i < static_cast<int>(dir_.size()); ++i) {
+      if ((i & mask2) == (index & mask2) && (i & mask1) != 0) {
         dir_[i] = ibptr;
-        
       }
     }
 
     // 重新在Bucket种安排kv对
-    RedistributeBucket(Bptr);
+    RedistributeBucket(bptr);
     // 重新确定bucket
     index = IndexOf(key);
-    Bptr = dir_[index];
+    bptr = dir_[index];
   }
-  Bptr->Insert(key,value);
-    //输出数据库
-  for(int i = 0; i < static_cast<int>(dir_.size());++i)
-  {
+  bptr->Insert(key, value);
+  // 输出数据库
+  for (int i = 0; i < static_cast<int>(dir_.size()); ++i) {
     std::cout << i << ": ";
-    std::list<std::pair<K, V>>& list = dir_[i]->GetItems();
-    for(auto &j: list)
-    {
+    std::list<std::pair<K, V>> &list = dir_[i]->GetItems();
+    for (auto &j : list) {
       std::cout << j.first << " ";
     }
     std::cout << std::endl;
   }
-  //UNREACHABLE("not implemented");
+  // UNREACHABLE("not implemented");
 }
 
 //===--------------------------------------------------------------------===//
@@ -174,31 +157,27 @@ ExtendibleHashTable<K, V>::Bucket::Bucket(size_t array_size, int depth) : size_(
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Bucket::Find(const K &key, V &value) -> bool {
-  //UNREACHABLE("not implemented");
+  // UNREACHABLE("not implemented");
   // 自动上锁解锁
   std::unique_lock<std::mutex> lock(mtx_);
-  //mtx_.lock();
-  for(std::pair<K, V> &i : list_)
-  {
-      if(i.first == key)
-      {
-        value = i.second;
-        //mtx_.unlock();
-        return true;
-      }  
+  // mtx_.lock();
+  for (std::pair<K, V> &i : list_) {
+    if (i.first == key) {
+      value = i.second;
+      // mtx_.unlock();
+      return true;
+    }
   }
-  //mtx_.unlock();
+  // mtx_.unlock();
   return false;
 }
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Bucket::Remove(const K &key) -> bool {
-  //UNREACHABLE("not implemented");
+  // UNREACHABLE("not implemented");
   std::unique_lock<std::mutex> lock(mtx_);
-  for(std::pair<K, V> &i : list_)
-  {
-    if(i.first == key)
-    {
+  for (std::pair<K, V> &i : list_) {
+    if (i.first == key) {
       list_.remove(i);
       return true;
     }
@@ -208,21 +187,18 @@ auto ExtendibleHashTable<K, V>::Bucket::Remove(const K &key) -> bool {
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Bucket::Insert(const K &key, const V &value) -> bool {
-  //UNREACHABLE("not implemented");
+  // UNREACHABLE("not implemented");
   std::unique_lock<std::mutex> lock(mtx_);
-  if(IsFull())
-  {
+  if (IsFull()) {
     return false;
   }
-  for(std::pair<K, V> &i : list_)
-  {
-    if(i.first == key)
-    {
+  for (std::pair<K, V> &i : list_) {
+    if (i.first == key) {
       i.second = value;
       return true;
     }
   }
-  list_.emplace_back(key,value);
+  list_.emplace_back(key, value);
   return true;
 }
 
