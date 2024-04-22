@@ -161,13 +161,19 @@ auto ExtendibleHashTable<K, V>::Bucket::Find(const K &key, V &value) -> bool {
   // 自动上锁解锁
   std::unique_lock<std::mutex> lock(mtx_);
   // mtx_.lock();
-  for (std::pair<K, V> &i : list_) {
-    if (i.first == key) {
-      value = i.second;
-      // mtx_.unlock();
+  for (auto it = list_.begin(); it != list_.end();++it) {
+    if((*it).first == key){
+      value = (*it).second;
       return true;
     }
   }
+  // for (std::pair<K, V> &i : list_) {
+  //   if (i.first == key) {
+  //     value = i.second;
+  //     // mtx_.unlock();
+  //     return true;
+  //   }
+  // }
   // mtx_.unlock();
   return false;
 }
@@ -176,12 +182,18 @@ template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Bucket::Remove(const K &key) -> bool {
   // UNREACHABLE("not implemented");
   std::unique_lock<std::mutex> lock(mtx_);
-  for (std::pair<K, V> &i : list_) {
-    if (i.first == key) {
-      list_.remove(i);
+  for (auto it = list_.begin(); it != list_.end();++it) {
+    if((*it).first == key){
+      list_.erase(it);
       return true;
     }
   }
+  // for (auto &i : list_) {
+  //   if (i.first == key) {
+  //     list_.remove(i);
+  //     return true;
+  //   }
+  // }
   return false;
 }
 
@@ -192,12 +204,18 @@ auto ExtendibleHashTable<K, V>::Bucket::Insert(const K &key, const V &value) -> 
   if (IsFull()) {
     return false;
   }
-  for (std::pair<K, V> &i : list_) {
-    if (i.first == key) {
-      i.second = value;
+  for (auto it = list_.begin(); it != list_.end();++it) {
+    if((*it).first == key){
+      (*it).second = value;
       return true;
     }
   }
+  // for (std::pair<K, V> &i : list_) {
+  //   if (i.first == key) {
+  //     i.second = value;
+  //     return true;
+  //   }
+  // }
   list_.emplace_back(key, value);
   return true;
 }
