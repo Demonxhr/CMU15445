@@ -161,8 +161,8 @@ auto ExtendibleHashTable<K, V>::Bucket::Find(const K &key, V &value) -> bool {
   // 自动上锁解锁
   std::unique_lock<std::mutex> lock(mtx_);
   // mtx_.lock();
-  for (auto it = list_.begin(); it != list_.end();++it) {
-    if((*it).first == key){
+  for (auto it = list_.begin(); it != list_.end(); ++it) {
+    if ((*it).first == key) {
       value = (*it).second;
       return true;
     }
@@ -182,8 +182,8 @@ template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Bucket::Remove(const K &key) -> bool {
   // UNREACHABLE("not implemented");
   std::unique_lock<std::mutex> lock(mtx_);
-  for (auto it = list_.begin(); it != list_.end();++it) {
-    if((*it).first == key){
+  for (auto it = list_.begin(); it != list_.end(); ++it) {
+    if ((*it).first == key) {
       list_.erase(it);
       return true;
     }
@@ -204,8 +204,8 @@ auto ExtendibleHashTable<K, V>::Bucket::Insert(const K &key, const V &value) -> 
   if (IsFull()) {
     return false;
   }
-  for (auto it = list_.begin(); it != list_.end();++it) {
-    if((*it).first == key){
+  for (auto it = list_.begin(); it != list_.end(); ++it) {
+    if ((*it).first == key) {
       (*it).second = value;
       return true;
     }
