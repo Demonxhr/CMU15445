@@ -166,7 +166,7 @@ class ExtendibleHashTable : public HashTable<K, V> {
     size_t size_;
     int depth_;
     std::list<std::pair<K, V>> list_;
-    std::mutex mtx_;
+    //std::mutex mtx_;
   };
 
  private:
@@ -185,7 +185,7 @@ class ExtendibleHashTable : public HashTable<K, V> {
    * @brief Redistribute the kv pairs in a full bucket.
    * @param bucket The bucket to be redistributed.
    */
-  auto RedistributeBucket(std::shared_ptr<Bucket> bucket) -> void;
+  //auto RedistributeBucket(std::shared_ptr<Bucket> bucket) -> void;
 
   /*****************************************************************
    * Must acquire latch_ first before calling the below functions. *
