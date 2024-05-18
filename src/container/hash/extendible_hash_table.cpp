@@ -109,7 +109,6 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
   std::unique_lock<std::mutex> lock(latch_);
 
   while (dir_[IndexOf(key)]->IsFull()) {  // 需要递归判断是否能将要插入的桶是否为满
-
     size_t index = IndexOf(key);
 
     auto target_bucket = dir_[index];
@@ -122,7 +121,6 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
       dir_.resize(capacity << 1);
 
       for (int i = 0; i < capacity; i++) {  // 调整索引
-
         dir_[i + capacity] = dir_[i];
       }
 
