@@ -132,13 +132,25 @@ class LRUKReplacer {
    */
   auto Size() -> size_t;
 
+  struct FrameEntry
+  {
+    size_t hit_count_{0};
+    bool evictable_{true};
+    // list 不会因为list改变而使iterator发生改变
+    std::list<frame_id_t>::iterator pos_;
+  };
+  
  private:
   // TODO(student): implement me! You can replace these member variables as you like.
   // Remove maybe_unused if you start using them.
+  std::list<frame_id_t> hist_list_;
+  std::list<frame_id_t> cache_list_;
+  std::unordered_map<frame_id_t,FrameEntry> entries_;
   [[maybe_unused]] size_t current_timestamp_{0};
-  [[maybe_unused]] size_t curr_size_{0};
-  [[maybe_unused]] size_t replacer_size_;
-  [[maybe_unused]] size_t k_;
+  size_t curr_size_{0};
+  size_t replacer_size_;
+  size_t k_;
+  
   std::mutex latch_;
 };
 
