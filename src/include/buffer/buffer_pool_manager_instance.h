@@ -178,10 +178,11 @@ class BufferPoolManagerInstance : public BufferPoolManager {
   }
 
   // TODO(student): You may add additional private members and helper functions
-private:
-    /**
-   * @brief Find vicim frame to evicted
-   * @return true if found, false otherwise
+ private:
+  /**
+   * @brief Try to find a victim frame to be evicted out to make space
+   * @param[out] available_frame_id if find victim, output its id
+   * @return true if found victim, false otherwise
    */
   auto FindVictim(frame_id_t *available_frame_id) -> bool;
 };
