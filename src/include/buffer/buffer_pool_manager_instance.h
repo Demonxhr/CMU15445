@@ -14,8 +14,8 @@
 
 #include <list>
 #include <mutex>  // NOLINT
-#include <unordered_map>
 #include <numeric>
+#include <unordered_map>
 
 #include "buffer/buffer_pool_manager.h"
 #include "buffer/lru_k_replacer.h"
@@ -141,8 +141,6 @@ class BufferPoolManagerInstance : public BufferPoolManager {
    */
   auto DeletePgImp(page_id_t page_id) -> bool override;
 
-  auto FindVictim(frame_id_t *available_frame_id)->bool;
-
   /** Number of pages in the buffer pool. */
   const size_t pool_size_;
   /** The next page id to be allocated  */
@@ -180,5 +178,11 @@ class BufferPoolManagerInstance : public BufferPoolManager {
   }
 
   // TODO(student): You may add additional private members and helper functions
+private:
+    /**
+   * @brief Find vicim frame to evicted
+   * @return true if found, false otherwise
+   */
+  auto FindVictim(frame_id_t *available_frame_id) -> bool;
 };
 }  // namespace bustub
