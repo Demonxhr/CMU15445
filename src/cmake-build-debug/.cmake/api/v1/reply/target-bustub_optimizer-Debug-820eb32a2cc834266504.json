@@ -1,0 +1,174 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./eliminate_true_filter.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./merge_projection.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./merge_filter_nlj.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./merge_filter_scan.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./nlj_as_hash_join.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./nlj_as_index_join.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./optimizer.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./optimizer_custom_rules.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./order_by_index_scan.obj"
+		},
+		{
+			"path" : "optimizer/CMakeFiles/bustub_optimizer.dir/./sort_limit_as_topn.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"optimizer/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			]
+		}
+	],
+	"id" : "bustub_optimizer::@0a55ae25571ad925f308",
+	"name" : "bustub_optimizer",
+	"paths" : 
+	{
+		"build" : "optimizer",
+		"source" : "optimizer"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/eliminate_true_filter.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/merge_projection.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/merge_filter_nlj.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/merge_filter_scan.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/nlj_as_hash_join.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/nlj_as_index_join.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/optimizer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/optimizer_custom_rules.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/order_by_index_scan.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "optimizer/sort_limit_as_topn.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

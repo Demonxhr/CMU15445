@@ -49,10 +49,17 @@ class BPlusTreeLeafPage : public BPlusTreePage {
   auto GetNextPageId() const -> page_id_t;
   void SetNextPageId(page_id_t next_page_id);
   auto KeyAt(int index) const -> KeyType;
-
+  auto ValueAt(int index) const -> ValueType;
+  auto KeyValueAt(int index) const -> const MappingType &;
+  void SetKeyValueAt(int index, KeyType key, ValueType value);
+  void Insert(const KeyType &key, const ValueType &value, const KeyComparator &comp);
+  void MoveDataTo(B_PLUS_TREE_LEAF_PAGE_TYPE *new_page, int count);
+  auto LowerBound(const KeyType &key, const KeyComparator &comp) -> int;
+  void Remove(const KeyType &key, const KeyComparator &comp);
  private:
+  // 链表
   page_id_t next_page_id_;
-  // Flexible array member for page data.
+  // Flexible array member for page data.  柔性数组 只能为类的最后一个 在不确定数组大小时使用
   MappingType array_[1];
 };
 }  // namespace bustub

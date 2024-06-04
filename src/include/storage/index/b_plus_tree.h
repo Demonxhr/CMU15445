@@ -57,8 +57,12 @@ class BPlusTree {
   // return the page id of the root node
   auto GetRootPageId() -> page_id_t;
 
+  // return the leaf page
+  auto GetLeafPage(const KeyType &key) -> Page*;
+
   // index iterator
   auto Begin() -> INDEXITERATOR_TYPE;
+  // 从key开始的迭代器
   auto Begin(const KeyType &key) -> INDEXITERATOR_TYPE;
   auto End() -> INDEXITERATOR_TYPE;
 

@@ -39,10 +39,14 @@ class BPlusTreeInternalPage : public BPlusTreePage {
   void Init(page_id_t page_id, page_id_t parent_id = INVALID_PAGE_ID, int max_size = INTERNAL_PAGE_SIZE);
 
   auto KeyAt(int index) const -> KeyType;
-  void SetKeyAt(int index, const KeyType &key);
   auto ValueAt(int index) const -> ValueType;
+  void SetKeyValueAt(int index, const KeyType &key, const ValueType &value);
+  void Insert(const KeyType &key, const ValueType &value, const KeyComparator &comp);
+
 
  private:
+  //void ExcavateIndex(int index);
+  //void FillIndex(int index);
   // Flexible array member for page data.
   MappingType array_[1];
 };

@@ -1,0 +1,174 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./binder.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./bind_create.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./bind_insert.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./bind_select.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./bind_variable.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./bound_statement.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./fmt_impl.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./keyword_helper.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./node_tag_to_string.obj"
+		},
+		{
+			"path" : "binder/CMakeFiles/bustub_binder.dir/./transformer.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"binder/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			]
+		}
+	],
+	"id" : "bustub_binder::@9df82e11cf2c34b3bd08",
+	"name" : "bustub_binder",
+	"paths" : 
+	{
+		"build" : "binder",
+		"source" : "binder"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/binder.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/bind_create.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/bind_insert.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/bind_select.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/bind_variable.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/bound_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/fmt_impl.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/keyword_helper.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/node_tag_to_string.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/transformer.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

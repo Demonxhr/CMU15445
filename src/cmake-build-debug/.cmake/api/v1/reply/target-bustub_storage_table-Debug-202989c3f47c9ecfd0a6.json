@@ -1,0 +1,97 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "storage/table/CMakeFiles/bustub_storage_table.dir/./table_heap.obj"
+		},
+		{
+			"path" : "storage/table/CMakeFiles/bustub_storage_table.dir/./table_iterator.obj"
+		},
+		{
+			"path" : "storage/table/CMakeFiles/bustub_storage_table.dir/./tuple.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"storage/table/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"id" : "bustub_storage_table::@cd63a316b43e39a6e4c8",
+	"name" : "bustub_storage_table",
+	"paths" : 
+	{
+		"build" : "storage/table",
+		"source" : "storage/table"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/table/table_heap.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/table/table_iterator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/table/tuple.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

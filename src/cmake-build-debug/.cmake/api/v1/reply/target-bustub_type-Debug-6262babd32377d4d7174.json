@@ -1,0 +1,185 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./bigint_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./boolean_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./decimal_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./integer_parent_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./integer_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./smallint_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./timestamp_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./tinyint_type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./type.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./value.obj"
+		},
+		{
+			"path" : "type/CMakeFiles/bustub_type.dir/./varlen_type.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"type/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10
+			]
+		}
+	],
+	"id" : "bustub_type::@e15f8144512089be4e7a",
+	"name" : "bustub_type",
+	"paths" : 
+	{
+		"build" : "type",
+		"source" : "type"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/bigint_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/boolean_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/decimal_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/integer_parent_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/integer_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/smallint_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/timestamp_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/tinyint_type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/type.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/value.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "type/varlen_type.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

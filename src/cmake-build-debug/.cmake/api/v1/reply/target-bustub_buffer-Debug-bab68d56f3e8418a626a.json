@@ -1,0 +1,108 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "buffer/CMakeFiles/bustub_buffer.dir/./buffer_pool_manager_instance.obj"
+		},
+		{
+			"path" : "buffer/CMakeFiles/bustub_buffer.dir/./clock_replacer.obj"
+		},
+		{
+			"path" : "buffer/CMakeFiles/bustub_buffer.dir/./lru_replacer.obj"
+		},
+		{
+			"path" : "buffer/CMakeFiles/bustub_buffer.dir/./lru_k_replacer.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"buffer/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3
+			]
+		}
+	],
+	"id" : "bustub_buffer::@850c0962cff040fb352c",
+	"name" : "bustub_buffer",
+	"paths" : 
+	{
+		"build" : "buffer",
+		"source" : "buffer"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "buffer/buffer_pool_manager_instance.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "buffer/clock_replacer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "buffer/lru_replacer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "buffer/lru_k_replacer.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

@@ -1,0 +1,141 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./create_statement.obj"
+		},
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./delete_statement.obj"
+		},
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./explain_statement.obj"
+		},
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./index_statement.obj"
+		},
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./insert_statement.obj"
+		},
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./select_statement.obj"
+		},
+		{
+			"path" : "binder/statement/CMakeFiles/bustub_statement.dir/./update_statement.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"binder/statement/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6
+			]
+		}
+	],
+	"id" : "bustub_statement::@1b0d0849c83c82f38191",
+	"name" : "bustub_statement",
+	"paths" : 
+	{
+		"build" : "binder/statement",
+		"source" : "binder/statement"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/create_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/delete_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/explain_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/index_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/insert_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/select_statement.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "binder/statement/update_statement.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

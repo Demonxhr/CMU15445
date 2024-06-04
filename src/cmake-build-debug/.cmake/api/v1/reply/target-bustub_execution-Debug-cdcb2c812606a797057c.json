@@ -1,0 +1,273 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./aggregation_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./delete_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./executor_factory.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./filter_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./fmt_impl.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./hash_join_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./index_scan_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./insert_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./limit_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./mock_scan_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./nested_index_join_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./nested_loop_join_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./plan_node.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./projection_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./seq_scan_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./sort_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./topn_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./update_executor.obj"
+		},
+		{
+			"path" : "execution/CMakeFiles/bustub_execution.dir/./values_executor.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"execution/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18
+			]
+		}
+	],
+	"id" : "bustub_execution::@564e8e27056fed0e128f",
+	"name" : "bustub_execution",
+	"paths" : 
+	{
+		"build" : "execution",
+		"source" : "execution"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/aggregation_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/delete_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/executor_factory.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/filter_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/fmt_impl.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/hash_join_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/index_scan_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/insert_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/limit_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/mock_scan_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/nested_index_join_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/nested_loop_join_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/plan_node.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/projection_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/seq_scan_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/sort_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/topn_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/update_executor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "execution/values_executor.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

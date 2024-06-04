@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/34279/Desktop/leveldb/cmu15445/cmake-build-debug/test/extendible_hash_table_test[1]_tests.cmake")
+  include("C:/Users/34279/Desktop/leveldb/cmu15445/cmake-build-debug/test/extendible_hash_table_test[1]_tests.cmake")
+else()
+  add_test(extendible_hash_table_test_NOT_BUILT extendible_hash_table_test_NOT_BUILT)
+endif()

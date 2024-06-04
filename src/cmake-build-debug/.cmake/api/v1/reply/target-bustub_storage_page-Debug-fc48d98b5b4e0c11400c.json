@@ -1,0 +1,152 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./b_plus_tree_internal_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./b_plus_tree_leaf_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./b_plus_tree_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./hash_table_block_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./hash_table_bucket_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./hash_table_directory_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./header_page.obj"
+		},
+		{
+			"path" : "storage/page/CMakeFiles/bustub_storage_page.dir/./table_page.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"storage/page/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7
+			]
+		}
+	],
+	"id" : "bustub_storage_page::@a835cd448a038733f36a",
+	"name" : "bustub_storage_page",
+	"paths" : 
+	{
+		"build" : "storage/page",
+		"source" : "storage/page"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/b_plus_tree_internal_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/b_plus_tree_leaf_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/b_plus_tree_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/hash_table_block_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/hash_table_bucket_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/hash_table_directory_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/header_page.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/page/table_page.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

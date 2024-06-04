@@ -1,0 +1,10 @@
+prefix=C:/Program Files (x86)/BusTub
+exec_prefix=C:/Program Files (x86)/BusTub/bin
+libdir=C:/Program Files (x86)/BusTub/lib
+includedir=C:/Program Files (x86)/BusTub/include
+
+Name: libutf8proc
+Description: UTF8 processing
+Version: 2.7.0
+Libs: -L${libdir} -lutf8proc
+Cflags: -I${includedir} -DUTF8PROC_EXPORTS

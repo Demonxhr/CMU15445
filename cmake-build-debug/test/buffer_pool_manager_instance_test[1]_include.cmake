@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/34279/Desktop/leveldb/cmu15445/cmake-build-debug/test/buffer_pool_manager_instance_test[1]_tests.cmake")
+  include("C:/Users/34279/Desktop/leveldb/cmu15445/cmake-build-debug/test/buffer_pool_manager_instance_test[1]_tests.cmake")
+else()
+  add_test(buffer_pool_manager_instance_test_NOT_BUILT buffer_pool_manager_instance_test_NOT_BUILT)
+endif()

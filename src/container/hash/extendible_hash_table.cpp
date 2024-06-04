@@ -90,7 +90,7 @@ auto ExtendibleHashTable<K, V>::GetNumBucketsInternal() const -> int {
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Find(const K &key, V &value) -> bool {
-  std::unique_lock<std::mutex> lock(latch_);
+  std::scoped_lock<std::mutex> lock(latch_);
   std::shared_ptr<Bucket> bptr = dir_[IndexOf(key)];
   return bptr->Find(key, value);
   // UNREACHABLE("not implemented");
@@ -98,7 +98,7 @@ auto ExtendibleHashTable<K, V>::Find(const K &key, V &value) -> bool {
 
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Remove(const K &key) -> bool {
-  std::unique_lock<std::mutex> lock(latch_);
+  std::scoped_lock<std::mutex> lock(latch_);
   std::shared_ptr<Bucket> bptr = dir_[IndexOf(key)];
   return bptr->Remove(key);
   // UNREACHABLE("not implemented");
@@ -106,7 +106,7 @@ auto ExtendibleHashTable<K, V>::Remove(const K &key) -> bool {
 
 template <typename K, typename V>
 void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
-  std::unique_lock<std::mutex> lock(latch_);
+  std::scoped_lock<std::mutex> lock(latch_);
 
   while (dir_[IndexOf(key)]->IsFull()) {  // 需要递归判断是否能将要插入的桶是否为满
     size_t index = IndexOf(key);

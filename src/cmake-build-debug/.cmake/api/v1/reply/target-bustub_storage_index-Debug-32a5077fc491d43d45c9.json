@@ -1,0 +1,119 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "storage/index/CMakeFiles/bustub_storage_index.dir/./b_plus_tree_index.obj"
+		},
+		{
+			"path" : "storage/index/CMakeFiles/bustub_storage_index.dir/./b_plus_tree.obj"
+		},
+		{
+			"path" : "storage/index/CMakeFiles/bustub_storage_index.dir/./extendible_hash_table_index.obj"
+		},
+		{
+			"path" : "storage/index/CMakeFiles/bustub_storage_index.dir/./index_iterator.obj"
+		},
+		{
+			"path" : "storage/index/CMakeFiles/bustub_storage_index.dir/./linear_probe_hash_table_index.obj"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library"
+		],
+		"files" : 
+		[
+			"storage/index/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4
+			]
+		}
+	],
+	"id" : "bustub_storage_index::@3c2bf7f72567ae684c46",
+	"name" : "bustub_storage_index",
+	"paths" : 
+	{
+		"build" : "storage/index",
+		"source" : "storage/index"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/index/b_plus_tree_index.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/index/b_plus_tree.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/index/extendible_hash_table_index.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/index/index_iterator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "storage/index/linear_probe_hash_table_index.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

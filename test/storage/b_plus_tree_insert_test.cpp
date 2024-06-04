@@ -20,7 +20,7 @@
 
 namespace bustub {
 
-TEST(BPlusTreeTests, DISABLED_InsertTest1) {
+TEST(BPlusTreeTests, InsertTest1) {
   // create KeyComparator and index schema
   auto key_schema = ParseCreateStatement("a bigint");
   GenericComparator<8> comparator(key_schema.get());
@@ -64,7 +64,7 @@ TEST(BPlusTreeTests, DISABLED_InsertTest1) {
   remove("test.log");
 }
 
-TEST(BPlusTreeTests, DISABLED_InsertTest2) {
+TEST(BPlusTreeTests, InsertTest2) {
   // create KeyComparator and index schema
   auto key_schema = ParseCreateStatement("a bigint");
   GenericComparator<8> comparator(key_schema.get());
@@ -127,7 +127,7 @@ TEST(BPlusTreeTests, DISABLED_InsertTest2) {
   remove("test.log");
 }
 
-TEST(BPlusTreeTests, DISABLED_InsertTest3) {
+TEST(BPlusTreeTests, InsertTest3) {
   // create KeyComparator and index schema
   auto key_schema = ParseCreateStatement("a bigint");
   GenericComparator<8> comparator(key_schema.get());
@@ -162,17 +162,31 @@ TEST(BPlusTreeTests, DISABLED_InsertTest3) {
     tree.GetValue(index_key, &rids);
     EXPECT_EQ(rids.size(), 1);
 
+
+
     int64_t value = key & 0xFFFFFFFF;
     EXPECT_EQ(rids[0].GetSlotNum(), value);
+
   }
 
   int64_t start_key = 1;
+
   int64_t current_key = start_key;
+
   index_key.SetFromInteger(start_key);
+
+  int i = 1;
   for (auto iterator = tree.Begin(index_key); iterator != tree.End(); ++iterator) {
+    std::cout << i++ << std::endl;
+    std::cout << "tree size: " << iterator.Get_size()<< std::endl;
+    std::cout << "page_id: " << iterator.Get_page_id() << std::endl;
+    std::cout << "index: " << iterator.Get_index() << std::endl;
     auto location = (*iterator).second;
+
     EXPECT_EQ(location.GetPageId(), 0);
+
     EXPECT_EQ(location.GetSlotNum(), current_key);
+
     current_key = current_key + 1;
   }
 
@@ -184,7 +198,9 @@ TEST(BPlusTreeTests, DISABLED_InsertTest3) {
   for (auto iterator = tree.Begin(index_key); iterator != tree.End(); ++iterator) {
     auto location = (*iterator).second;
     EXPECT_EQ(location.GetPageId(), 0);
+
     EXPECT_EQ(location.GetSlotNum(), current_key);
+
     current_key = current_key + 1;
   }
 
@@ -194,5 +210,6 @@ TEST(BPlusTreeTests, DISABLED_InsertTest3) {
   delete bpm;
   remove("test.db");
   remove("test.log");
+
 }
 }  // namespace bustub

@@ -87,6 +87,7 @@ auto BufferPoolManagerInstance::FetchPgImp(page_id_t page_id) -> Page * {
   // 从磁盘中读入数据
   disk_manager_->ReadPage(page_id, pages_[available_frame_id].GetData());
   replacer_->RecordAccess(available_frame_id);
+  // 有正在使用改page的用户 设置不可弹出
   replacer_->SetEvictable(available_frame_id, false);
   page_table_->Insert(page_id, available_frame_id);
   return &pages_[available_frame_id];
@@ -102,6 +103,7 @@ auto BufferPoolManagerInstance::UnpinPgImp(page_id_t page_id, bool is_dirty) -> 
     return false;
   }
   if (--pages_[frame_id].pin_count_ == 0) {
+    // 没人使用  可以被换出
     replacer_->SetEvictable(frame_id, true);
   }
 
