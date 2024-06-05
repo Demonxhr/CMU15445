@@ -51,15 +51,16 @@ class BPlusTree {
   // Remove a key and its value from this B+ tree.
   void Remove(const KeyType &key, Transaction *transaction = nullptr);
 
-  void HandleUnderflow(BPlusTreePage *page,Transaction *transaction);
+  void HandleUnderflow(BPlusTreePage *page, Transaction *transaction);
 
-  void UnpinSiblings(page_id_t left_sibling_id,page_id_t right_sibling_id);
+  void UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id);
 
-  void SetPageParentId(page_id_t child_pageid,page_id_t parent_pageid);
+  void SetPageParentId(page_id_t child_pageid, page_id_t parent_pageid);
 
   void MergePage(BPlusTreePage *left_page, BPlusTreePage *right_page, InternalPage *parent_page);
 
-  auto TryBorrow(BPlusTreePage *page, BPlusTreePage *sibling_page, InternalPage *parent_page, bool sibling_at_left) -> bool;
+  auto TryBorrow(BPlusTreePage *page, BPlusTreePage *sibling_page, InternalPage *parent_page, bool sibling_at_left)
+      -> bool;
 
   void GetSiblings(BPlusTreePage *page, page_id_t &left_sibling_id, page_id_t &right_sibling_id);
 
@@ -70,7 +71,7 @@ class BPlusTree {
   auto GetRootPageId() -> page_id_t;
 
   // return the leaf page
-  auto GetLeafPage(const KeyType &key) -> Page*;
+  auto GetLeafPage(const KeyType &key) -> Page *;
 
   // index iterator
   auto Begin() -> INDEXITERATOR_TYPE;

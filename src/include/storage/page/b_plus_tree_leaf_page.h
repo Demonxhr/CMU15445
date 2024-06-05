@@ -57,6 +57,7 @@ class BPlusTreeLeafPage : public BPlusTreePage {
   auto LowerBound(const KeyType &key, const KeyComparator &comp) -> int;
   void Remove(const KeyType &key, const KeyComparator &comp);
   void RemoveAt(const int index);
+
  private:
   // 链表
   page_id_t next_page_id_;

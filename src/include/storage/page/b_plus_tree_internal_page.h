@@ -48,8 +48,8 @@ class BPlusTreeInternalPage : public BPlusTreePage {
   void RemoveAt(const int index);
 
  private:
-  //void ExcavateIndex(int index);
-  //void FillIndex(int index);
+  // void ExcavateIndex(int index);
+  // void FillIndex(int index);
   // Flexible array member for page data.
   MappingType array_[1];
 };

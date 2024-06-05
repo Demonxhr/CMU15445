@@ -34,26 +34,20 @@ class IndexIterator {
   auto operator++() -> IndexIterator &;
 
   auto operator==(const IndexIterator &itr) const -> bool {
-      return page_id_ == itr.page_id_ && index_in_leaf_ == itr.index_in_leaf_;
+    return page_id_ == itr.page_id_ && index_in_leaf_ == itr.index_in_leaf_;
   }
 
   auto operator!=(const IndexIterator &itr) const -> bool {
-      return page_id_ != itr.page_id_ || index_in_leaf_ != itr.index_in_leaf_;
+    return page_id_ != itr.page_id_ || index_in_leaf_ != itr.index_in_leaf_;
   }
-  auto Get_page_id() const -> page_id_t {
-      return page_id_;
-  }
-  auto Get_index() const -> page_id_t {
-        return index_in_leaf_;
-  }
-    auto Get_size() const -> page_id_t {
-        return leaf_page_->GetSize();
-    }
+  auto Get_page_id() const -> page_id_t { return page_id_; }
+  auto Get_index() const -> page_id_t { return index_in_leaf_; }
+  auto Get_size() const -> page_id_t { return leaf_page_->GetSize(); }
 
  private:
   // add your own private member variables here
   // 页id
-  page_id_t  page_id_ = INVALID_PAGE_ID;
+  page_id_t page_id_ = INVALID_PAGE_ID;
   Page *page_ = nullptr;
   B_PLUS_TREE_LEAF_PAGE_TYPE *leaf_page_ = nullptr;
   // 页内id
