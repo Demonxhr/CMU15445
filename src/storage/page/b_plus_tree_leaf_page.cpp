@@ -131,7 +131,15 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::Remove(const KeyType &key, const KeyComparator 
         return;
     }
 
-    for(int i = index; i < size-1; ++i) {
+    for (int i = index; i < size-1; ++i) {
+        array_[i] = array_[i+1];
+    }
+    DecreaseSize(1);
+}
+INDEX_TEMPLATE_ARGUMENTS
+void B_PLUS_TREE_LEAF_PAGE_TYPE::RemoveAt(const int index) {
+    int size = GetSize();
+    for (int i = index; i < size - 1;++i){
         array_[i] = array_[i+1];
     }
     DecreaseSize(1);

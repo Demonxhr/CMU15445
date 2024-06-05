@@ -41,8 +41,11 @@ class BPlusTreeInternalPage : public BPlusTreePage {
   auto KeyAt(int index) const -> KeyType;
   auto ValueAt(int index) const -> ValueType;
   void SetKeyValueAt(int index, const KeyType &key, const ValueType &value);
+  void SetKeyAt(int index, const KeyType &key);
+  void SetValueAt(int index, const ValueType &value);
   void Insert(const KeyType &key, const ValueType &value, const KeyComparator &comp);
-
+  auto FindValue(const page_id_t pageid) const -> int;
+  void RemoveAt(const int index);
 
  private:
   //void ExcavateIndex(int index);

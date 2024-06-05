@@ -51,6 +51,18 @@ class BPlusTree {
   // Remove a key and its value from this B+ tree.
   void Remove(const KeyType &key, Transaction *transaction = nullptr);
 
+  void HandleUnderflow(BPlusTreePage *page,Transaction *transaction);
+
+  void UnpinSiblings(page_id_t left_sibling_id,page_id_t right_sibling_id);
+
+  void SetPageParentId(page_id_t child_pageid,page_id_t parent_pageid);
+
+  void MergePage(BPlusTreePage *left_page, BPlusTreePage *right_page, InternalPage *parent_page);
+
+  auto TryBorrow(BPlusTreePage *page, BPlusTreePage *sibling_page, InternalPage *parent_page, bool sibling_at_left) -> bool;
+
+  void GetSiblings(BPlusTreePage *page, page_id_t &left_sibling_id, page_id_t &right_sibling_id);
+
   // return the value associated with a given key
   auto GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction = nullptr) -> bool;
 

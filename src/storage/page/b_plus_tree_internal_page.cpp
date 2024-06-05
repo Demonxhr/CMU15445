@@ -49,6 +49,15 @@ void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetKeyValueAt(int index, const KeyType &key
 }
 
 INDEX_TEMPLATE_ARGUMENTS
+void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetKeyAt(int index, const KeyType &key){
+    array_[index].first = key;
+}
+INDEX_TEMPLATE_ARGUMENTS
+void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetValueAt(int index, const ValueType &value) {
+    array_[index].second = value;
+}
+
+INDEX_TEMPLATE_ARGUMENTS
 void B_PLUS_TREE_INTERNAL_PAGE_TYPE::Insert(const KeyType &key, const ValueType &value, const KeyComparator &comp) {
     int size = GetSize();
     // ..........有点问题  有没有=
@@ -69,7 +78,23 @@ void B_PLUS_TREE_INTERNAL_PAGE_TYPE::Insert(const KeyType &key, const ValueType 
     SetKeyValueAt(ins_at,key,value);
 }
 
+INDEX_TEMPLATE_ARGUMENTS
+auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::FindValue(const page_id_t pageid) const -> int {
+    int size = GetSize();
+    for (int i = 0; i < size; ++i) {
+        if(array_[i].second == pageid) return i;
+    }
+    return -1;
+}
 
+INDEX_TEMPLATE_ARGUMENTS
+void B_PLUS_TREE_INTERNAL_PAGE_TYPE::RemoveAt(const int index) {
+    int size = GetSize();
+    for (int i = index; i < size - 1; ++i) {
+        array_[i] = array_[i + 1];
+    }
+    DecreaseSize(1);
+}
 
 /*
  * Helper method to get the value associated with input "index"(a.k.a array

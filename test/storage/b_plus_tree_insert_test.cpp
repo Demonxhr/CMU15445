@@ -175,12 +175,11 @@ TEST(BPlusTreeTests, InsertTest3) {
 
   index_key.SetFromInteger(start_key);
 
-  int i = 1;
   for (auto iterator = tree.Begin(index_key); iterator != tree.End(); ++iterator) {
-    std::cout << i++ << std::endl;
-    std::cout << "tree size: " << iterator.Get_size()<< std::endl;
-    std::cout << "page_id: " << iterator.Get_page_id() << std::endl;
-    std::cout << "index: " << iterator.Get_index() << std::endl;
+//    std::cout << i++ << std::endl;
+//    std::cout << "tree size: " << iterator.Get_size()<< std::endl;
+//    std::cout << "page_id: " << iterator.Get_page_id() << std::endl;
+//    std::cout << "index: " << iterator.Get_index() << std::endl;
     auto location = (*iterator).second;
 
     EXPECT_EQ(location.GetPageId(), 0);

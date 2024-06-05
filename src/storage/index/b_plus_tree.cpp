@@ -234,10 +234,177 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
 
     // 发生下溢出
     if (leaf_page->GetSize() < leaf_page->GetMinSize()) {
-        std::cout << "发生下溢出" << std::endl;
+        // 递归调用
+        HandleUnderflow(leaf_page, transaction);
     }
 }
 
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id) {
+    if(left_sibling_id != INVALID_PAGE_ID)
+        buffer_pool_manager_->UnpinPage(left_sibling_id,true);
+    if(right_sibling_id != INVALID_PAGE_ID)
+        buffer_pool_manager_->UnpinPage(right_sibling_id,true);
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::SetPageParentId(page_id_t child_pageid,page_id_t parent_pageid) {
+    Page *page = buffer_pool_manager_->FetchPage(child_pageid);
+    BPlusTreePage* treepage = reinterpret_cast<BPlusTreePage*>(page->GetData());
+    treepage->SetParentPageId(parent_pageid);
+    buffer_pool_manager_->UnpinPage(child_pageid,true);
+}
+
+// 当无法从左右兄弟处借节点时选择和他们合并
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::MergePage(BPlusTreePage *left_page, BPlusTreePage *right_page, InternalPage *parent_page) {
+    // 先从叶节点开始
+    if (left_page->IsLeafPage()) {
+        auto left_leaf_page = static_cast<LeafPage *>(left_page);
+        auto right_leaf_page = static_cast<LeafPage *>(right_page);
+
+        for (int i = 0; i < right_leaf_page->GetSize();++i) {
+            left_leaf_page->Insert(right_leaf_page->KeyAt(i), right_leaf_page->ValueAt(i), comparator_);
+        }
+        left_leaf_page->SetNextPageId(right_leaf_page->GetNextPageId());
+        // 从父节点中删除合并完后的右节点
+        parent_page->RemoveAt(parent_page->FindValue(right_page->GetPageId()));
+    } else {
+        auto left_internal_page = static_cast<InternalPage *>(left_page);
+        auto right_internal_page = static_cast<InternalPage *>(right_page);
+        // 父节点下移
+        left_internal_page->Insert(parent_page->KeyAt(parent_page->FindValue(right_page->GetPageId())),right_internal_page->ValueAt(0),comparator_);
+        SetPageParentId(right_internal_page->ValueAt(0),left_internal_page->GetPageId());
+        // 从父节点中删除合并完后的右节点
+        parent_page->RemoveAt(parent_page->FindValue(right_page->GetPageId()));
+        for (int i = 1; i < right_internal_page->GetSize(); ++i) {
+            left_internal_page->Insert(right_internal_page->KeyAt(i),right_internal_page->ValueAt(i),comparator_);
+            SetPageParentId(right_internal_page->ValueAt(i),left_internal_page->GetPageId());
+        }
+    }
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::HandleUnderflow(BPlusTreePage *page,Transaction *transaction) {
+    // 处理是根节点的情况  （递归到根节点的情况）
+    if (page->IsRootPage()) {
+        if (page->IsLeafPage() || page->GetSize() > 1) {
+            return ;
+        }
+
+        // 如果根节点不是叶节点且根节点的大小小于等于1时  需要节点上移 把唯一的子节点作为根节点
+        auto old_root_page = static_cast<InternalPage *>(page);
+        root_page_id_ = old_root_page->ValueAt(0);
+        auto new_root_page = reinterpret_cast<InternalPage *>(buffer_pool_manager_->FetchPage(root_page_id_)->GetData());
+        new_root_page->SetParentPageId(INVALID_PAGE_ID);
+        buffer_pool_manager_->UnpinPage(root_page_id_, true);
+        UpdateRootPageId();
+        return;
+    }
+    page_id_t left_sibling_id;
+    page_id_t right_sibling_id;
+    GetSiblings(page,left_sibling_id,right_sibling_id);
+    if (left_sibling_id == INVALID_PAGE_ID && right_sibling_id == INVALID_PAGE_ID) {
+        throw std::logic_error("Non-root page * " + std::to_string(page->GetPageId()) + " has no sibling.");
+    }
+    BPlusTreePage *left_sibling_page = nullptr;
+    BPlusTreePage *right_sibling_page = nullptr;
+    // 优先左边
+    if (left_sibling_id != INVALID_PAGE_ID) {
+        left_sibling_page = reinterpret_cast<BPlusTreePage *>(buffer_pool_manager_->FetchPage(left_sibling_id)->GetData());
+    }
+    if (right_sibling_id != INVALID_PAGE_ID) {
+        right_sibling_page = reinterpret_cast<BPlusTreePage *>(buffer_pool_manager_->FetchPage(right_sibling_id)->GetData());
+    }
+    auto parent_page = reinterpret_cast<InternalPage *>(buffer_pool_manager_->FetchPage(page->GetParentPageId())->GetData());
+
+    if(TryBorrow(page,left_sibling_page,parent_page,true) ||
+        TryBorrow(page,right_sibling_page,parent_page,false)) {
+        UnpinSiblings(left_sibling_id,right_sibling_id);
+        buffer_pool_manager_->UnpinPage(parent_page->GetPageId(),true);
+        return;
+    }
+    BPlusTreePage *left_page;
+    BPlusTreePage *right_page;
+    if (left_sibling_page != nullptr) {
+        left_page = left_sibling_page;
+        right_page = page;
+    } else {
+        left_page = page;
+        right_page = right_sibling_page;
+    }
+    MergePage(left_page,right_page,parent_page);
+    UnpinSiblings(left_sibling_id,right_sibling_id);
+    // 子节点下溢出解决后导致父节点下溢出  递归解决
+    if (parent_page->GetSize() < parent_page->GetMinSize()) {
+        HandleUnderflow(parent_page,transaction);
+    }
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+auto BPLUSTREE_TYPE::TryBorrow(BPlusTreePage *page, BPlusTreePage *sibling_page, InternalPage *parent_page, bool sibling_at_left) -> bool {
+    // 兄弟也借不了
+    if (sibling_page == nullptr || sibling_page->GetSize() <= sibling_page->GetMinSize()) {
+        return false;
+    }
+    // 兄弟节点在左边  从最后面借  兄弟节点在右边 从第一个借   第一个需要判断是不是内部节点  内部节点的第一个为0 没有意义 不报错key
+    int sibling_borrow_at = sibling_at_left ? sibling_page->GetSize() - 1: (page->IsLeafPage() ? 0 : 1);
+    // 从左侧偷取时 是更新父节点中当前page的索引    从右侧偷取时  是更新当前page的下一个page的索引
+    int parent_update_at = parent_page->FindValue(page->GetPageId()) + (sibling_at_left ? 0 : 1);
+    KeyType update_key;
+    // 如果是叶子节点
+    if (page->IsLeafPage()) {
+        auto leaf_page = static_cast<LeafPage *>(page);
+        auto leaf_sibling_page = static_cast<LeafPage *>(sibling_page);
+        leaf_page->Insert(leaf_sibling_page->KeyAt(sibling_borrow_at),leaf_sibling_page->ValueAt(sibling_borrow_at),comparator_);
+        leaf_sibling_page->RemoveAt(sibling_borrow_at);
+        update_key = sibling_at_left ? leaf_page->KeyAt(0) : leaf_sibling_page->KeyAt(0);
+    } else { //非叶子节点
+        auto internal_page = static_cast<InternalPage *>(page);
+        auto internal_sibling_page = static_cast<InternalPage *>(sibling_page);
+        update_key = internal_sibling_page->KeyAt(sibling_borrow_at);
+        page_id_t child_id;
+        if(sibling_at_left) {
+            // 将父节点的key插到本节点
+            internal_page->Insert(parent_page->KeyAt(parent_update_at),internal_page->ValueAt(0),comparator_);
+            // 设置第一个节点为兄弟节点的最后一个索引
+            internal_page->SetValueAt(0,internal_sibling_page->ValueAt(sibling_borrow_at));
+            child_id = internal_page->ValueAt(0);
+        } else  {
+            // 在最后插入  下溢出肯定可以插入
+            internal_page->SetKeyValueAt(internal_page->GetSize(),parent_page->KeyAt(parent_update_at),internal_sibling_page->ValueAt(0));
+            internal_page->IncreaseSize(1);
+            internal_sibling_page->SetValueAt(0,internal_sibling_page->ValueAt(1));
+            child_id = internal_page->ValueAt(internal_page->GetSize() - 1);
+        }
+        internal_sibling_page->RemoveAt(sibling_borrow_at);
+        Page *page1 = buffer_pool_manager_->FetchPage(child_id);
+        auto child_page = reinterpret_cast<BPlusTreePage *>(page1->GetData());
+        child_page->SetParentPageId(internal_page->GetPageId());
+        buffer_pool_manager_->UnpinPage(child_id,true);
+
+    }
+    parent_page->SetKeyAt(parent_update_at, update_key);
+    return true;
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::GetSiblings(BPlusTreePage *page, page_id_t &left_sibling_id, page_id_t &right_sibling_id) {
+    // 根节点没有兄弟节点
+    if (page->IsRootPage()) {
+        throw std::invalid_argument("Cannot get sibling of the root page");
+    }
+    auto parent_page = reinterpret_cast<InternalPage *>(buffer_pool_manager_->FetchPage(page->GetParentPageId())->GetData());
+    int index = parent_page->FindValue(page->GetPageId());
+    left_sibling_id = right_sibling_id = INVALID_PAGE_ID;
+    if (index != 0) {
+        left_sibling_id = parent_page->ValueAt(index-1);
+    }
+    if (index != parent_page->GetSize() - 1) {
+        right_sibling_id = parent_page->ValueAt(index+1);
+    }
+    buffer_pool_manager_->UnpinPage(parent_page->GetPageId(),false);
+}
 /*****************************************************************************
  * INDEX ITERATOR
  *****************************************************************************/
