@@ -222,6 +222,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
  */
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
+    std::cout << "remove: " << key << std::endl;
   if (IsEmpty()) {
     return;
   }

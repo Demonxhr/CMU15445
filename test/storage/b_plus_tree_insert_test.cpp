@@ -229,7 +229,7 @@ TEST(BPlusTreeTests, DISABLED_InsertTest3) {
         (void)header_page;
 
         std::vector<int64_t> keys; //= {1, 2, 3, 4, 5};
-        for(int64_t i = 1; i <= 512; ++i) {
+        for(int64_t i = 1; i <= 9999; ++i) {
             keys.push_back(i);
         }
         for (auto key : keys) {
@@ -241,7 +241,7 @@ TEST(BPlusTreeTests, DISABLED_InsertTest3) {
 
 
         std::vector<RID> rids;
-        int64_t mkey = (int64_t)9999;
+        int64_t mkey = (int64_t)99999;
         index_key.SetFromInteger(mkey);
         tree.GetValue(index_key,&rids);
         EXPECT_EQ(rids.size(), 0);
