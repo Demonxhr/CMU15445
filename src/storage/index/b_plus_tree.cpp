@@ -56,10 +56,10 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return root_page_id_ == INVALID_P
  * This method is used for point query
  * @return : true means key exists
  */
-int num = 0;
+
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction) -> bool {
-    ++num;
+    std::cout << "get: " << key << std::endl;
   bool found = false;
   Page *page = GetLeafPage(key);
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
@@ -70,7 +70,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
     }
   }
   buffer_pool_manager_->UnpinPage(page->GetPageId(), false);
-  std::cout << num <<std::endl;
+
   return found;
 }
 
@@ -86,6 +86,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transaction *transaction) -> bool {
+    std::cout << "insert: " << key << std::endl;
   // 如果为空树 创建叶节点为根节点
   if (IsEmpty()) {
     Page *page = buffer_pool_manager_->NewPage(&root_page_id_);
