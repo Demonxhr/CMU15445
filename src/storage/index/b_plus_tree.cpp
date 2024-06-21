@@ -58,6 +58,7 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return root_page_id_ == INVALID_P
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction) -> bool {
+
   bool found = false;
   Page *page = GetLeafPage(key);
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
@@ -68,7 +69,8 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
     }
   }
   buffer_pool_manager_->UnpinPage(page->GetPageId(), false);
-  return found;
+    std::cout << "key: " << key << " found: " << found << std::endl;
+    return found;
 }
 
 /*****************************************************************************
