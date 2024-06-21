@@ -59,7 +59,10 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return root_page_id_ == INVALID_P
 
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction) -> bool {
-    std::cout << "get: " << key << std::endl;
+    for(int i = 0; i < 10000;++i) {
+        std::cout << "1" << std::endl;
+    }
+    //std::cout << "get: " << key << std::endl;
   bool found = false;
   Page *page = GetLeafPage(key);
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
@@ -86,7 +89,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transaction *transaction) -> bool {
-    std::cout << "insert: " << key << std::endl;
+    //std::cout << "insert: " << key << std::endl;
   // 如果为空树 创建叶节点为根节点
   if (IsEmpty()) {
     Page *page = buffer_pool_manager_->NewPage(&root_page_id_);
@@ -222,7 +225,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
  */
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
-    std::cout << "remove: " << key << std::endl;
+    //std::cout << "remove: " << key << std::endl;
   if (IsEmpty()) {
     return;
   }
