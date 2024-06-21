@@ -69,8 +69,9 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
     }
   }
   buffer_pool_manager_->UnpinPage(page->GetPageId(), false);
-    std::cout << "key: " << key << " found: " << found << std::endl;
-    return found;
+  if(found == 0)
+      std::cout << "key: " << key << " found: " << found << std::endl;
+  return found;
 }
 
 /*****************************************************************************
