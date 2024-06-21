@@ -56,9 +56,10 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return root_page_id_ == INVALID_P
  * This method is used for point query
  * @return : true means key exists
  */
+int num = 0;
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction) -> bool {
-
+    ++num;
   bool found = false;
   Page *page = GetLeafPage(key);
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
@@ -69,8 +70,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
     }
   }
   buffer_pool_manager_->UnpinPage(page->GetPageId(), false);
-  if(found == 0)
-      std::cout << "key: " << key << " found: " << found << std::endl;
+  std::cout << num <<std::endl;
   return found;
 }
 
