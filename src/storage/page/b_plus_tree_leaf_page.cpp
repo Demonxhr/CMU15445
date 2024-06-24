@@ -135,7 +135,7 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::Remove(const KeyType &key, const KeyComparator 
   DecreaseSize(1);
 }
 INDEX_TEMPLATE_ARGUMENTS
-void B_PLUS_TREE_LEAF_PAGE_TYPE::RemoveAt(const int index) {
+void B_PLUS_TREE_LEAF_PAGE_TYPE::RemoveAt(int index) {
   int size = GetSize();
   for (int i = index; i < size - 1; ++i) {
     array_[i] = array_[i + 1];

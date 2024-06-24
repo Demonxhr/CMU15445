@@ -56,7 +56,7 @@ class BPlusTreeLeafPage : public BPlusTreePage {
   void MoveDataTo(B_PLUS_TREE_LEAF_PAGE_TYPE *new_page, int count);
   auto LowerBound(const KeyType &key, const KeyComparator &comp) -> int;
   void Remove(const KeyType &key, const KeyComparator &comp);
-  void RemoveAt(const int index);
+  void RemoveAt(int index);
 
  private:
   // 链表

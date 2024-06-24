@@ -77,16 +77,18 @@ void B_PLUS_TREE_INTERNAL_PAGE_TYPE::Insert(const KeyType &key, const ValueType 
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::FindValue(const page_id_t pageid) const -> int {
+auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::FindValue(page_id_t pageid) const -> int {
   int size = GetSize();
   for (int i = 0; i < size; ++i) {
-    if (array_[i].second == pageid) return i;
+    if (array_[i].second == pageid) {
+        return i;
+    }
   }
   return -1;
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-void B_PLUS_TREE_INTERNAL_PAGE_TYPE::RemoveAt(const int index) {
+void B_PLUS_TREE_INTERNAL_PAGE_TYPE::RemoveAt(int index) {
   int size = GetSize();
   for (int i = index; i < size - 1; ++i) {
     array_[i] = array_[i + 1];

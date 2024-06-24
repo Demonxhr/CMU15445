@@ -40,9 +40,9 @@ class IndexIterator {
   auto operator!=(const IndexIterator &itr) const -> bool {
     return page_id_ != itr.page_id_ || index_in_leaf_ != itr.index_in_leaf_;
   }
-  auto Get_page_id() const -> page_id_t { return page_id_; }
-  auto Get_index() const -> page_id_t { return index_in_leaf_; }
-  auto Get_size() const -> page_id_t { return leaf_page_->GetSize(); }
+  auto GetPageId() const -> page_id_t { return page_id_; }
+  auto GetIndex() const -> page_id_t { return index_in_leaf_; }
+  auto GetSize() const -> page_id_t { return leaf_page_->GetSize(); }
 
  private:
   // add your own private member variables here

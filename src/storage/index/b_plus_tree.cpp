@@ -125,7 +125,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
   // 插入树中发生分裂
   page_id_t new_leave_page_id;
   Page *new_page_t = buffer_pool_manager_->NewPage(&new_leave_page_id);
-  LeafPage *new_leaf_page = reinterpret_cast<LeafPage *>(new_page_t);
+  auto *new_leaf_page = reinterpret_cast<LeafPage *>(new_page_t);
   new_leaf_page->Init(new_leave_page_id, leaf_page->GetParentPageId(), leaf_max_size_);
 
   // 设置链表
@@ -246,14 +246,18 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
 
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id) {
-  if (left_sibling_id != INVALID_PAGE_ID) buffer_pool_manager_->UnpinPage(left_sibling_id, true);
-  if (right_sibling_id != INVALID_PAGE_ID) buffer_pool_manager_->UnpinPage(right_sibling_id, true);
+  if (left_sibling_id != INVALID_PAGE_ID) {
+      buffer_pool_manager_->UnpinPage(left_sibling_id, true);
+  }
+  if (right_sibling_id != INVALID_PAGE_ID) {
+      buffer_pool_manager_->UnpinPage(right_sibling_id, true);
+  }
 }
 
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::SetPageParentId(page_id_t child_pageid, page_id_t parent_pageid) {
   Page *page = buffer_pool_manager_->FetchPage(child_pageid);
-  BPlusTreePage *treepage = reinterpret_cast<BPlusTreePage *>(page->GetData());
+  auto *treepage = reinterpret_cast<BPlusTreePage *>(page->GetData());
   treepage->SetParentPageId(parent_pageid);
   buffer_pool_manager_->UnpinPage(child_pageid, true);
 }
