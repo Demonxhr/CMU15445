@@ -59,15 +59,13 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return root_page_id_ == INVALID_P
 
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction) -> bool {
-    for(int i = 0; i < 10000;++i) {
-        std::cout << "1" << std::endl;
-    }
     //std::cout << "get: " << key << std::endl;
   bool found = false;
   Page *page = GetLeafPage(key);
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
   for (int i = 0; i < leaf_page->GetSize(); ++i) {
-    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
+    //std::cout << leaf_page->KeyAt(i) <<std::endl;
+    if (comparator_(leaf_page->KeyAt(i), key) == 0) {  
       result->emplace_back(leaf_page->ValueAt(i));
       found = true;
     }
@@ -115,13 +113,18 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
     }
   }
 
+
   // key不在树中
   leaf_page->Insert(key, value, comparator_);
+
+
   // 插入key不会发生分裂时
   if (leaf_page->GetSize() < leaf_max_size_) {
-    buffer_pool_manager_->UnpinPage(leaf_page->GetPageId(), false);
+    buffer_pool_manager_->UnpinPage(leaf_page->GetPageId(), true);
     return true;
   }
+
+
 
   // 插入树中发生分裂
   page_id_t new_leave_page_id;
@@ -134,6 +137,8 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
   leaf_page->SetNextPageId(new_leave_page_id);
   // 移动当前页面(leaf_max_size_+1)/2后的元素到目标页面
   leaf_page->MoveDataTo(new_leaf_page, (leaf_max_size_ + 1) / 2);
+
+
 
   BPlusTreePage *old_tree_page = leaf_page;
   BPlusTreePage *new_tree_page = new_leaf_page;
@@ -154,17 +159,17 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
       new_tree_page->SetParentPageId(root_page_id_);
       // 根节点变了需要更新
       UpdateRootPageId();
-      std::cout << "new_root_page "
-                << "size: " << new_root_page->GetSize() << ", "
-                << "maxsize: " << new_root_page->GetMaxSize() << std::endl;
-      std::cout << "old_tree_page "
-                << "size: " << old_tree_page->GetSize() << ", "
-                << "maxsize: " << old_tree_page->GetMaxSize() << std::endl;
-      std::cout << "new_tree_page "
-                << "size: " << new_tree_page->GetSize() << ", "
-                << "maxsize: " << new_tree_page->GetMaxSize() << std::endl;
+      // std::cout << "new_root_page "
+      //           << "size: " << new_root_page->GetSize() << ", "
+      //           << "maxsize: " << new_root_page->GetMaxSize() << std::endl;
+      // std::cout << "old_tree_page "
+      //           << "size: " << old_tree_page->GetSize() << ", "
+      //           << "maxsize: " << old_tree_page->GetMaxSize() << std::endl;
+      // std::cout << "new_tree_page "
+      //           << "size: " << new_tree_page->GetSize() << ", "
+      //           << "maxsize: " << new_tree_page->GetMaxSize() << std::endl;
       // unpin 根节点
-      buffer_pool_manager_->UnpinPage(root_page_id_, true);
+      buffer_pool_manager_->UnpinPage(new_root_page->GetPageId(), true);
       break;
     }
 
