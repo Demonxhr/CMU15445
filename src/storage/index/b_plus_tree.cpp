@@ -247,10 +247,10 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id) {
   if (left_sibling_id != INVALID_PAGE_ID) {
-      buffer_pool_manager_->UnpinPage(left_sibling_id, true);
+    buffer_pool_manager_->UnpinPage(left_sibling_id, true);
   }
   if (right_sibling_id != INVALID_PAGE_ID) {
-      buffer_pool_manager_->UnpinPage(right_sibling_id, true);
+    buffer_pool_manager_->UnpinPage(right_sibling_id, true);
   }
 }
 

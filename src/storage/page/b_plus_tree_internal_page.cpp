@@ -81,7 +81,7 @@ auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::FindValue(page_id_t pageid) const -> int {
   int size = GetSize();
   for (int i = 0; i < size; ++i) {
     if (array_[i].second == pageid) {
-        return i;
+      return i;
     }
   }
   return -1;
