@@ -59,13 +59,13 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return root_page_id_ == INVALID_P
 
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result, Transaction *transaction) -> bool {
-    //std::cout << "get: " << key << std::endl;
+  // std::cout << "get: " << key << std::endl;
   bool found = false;
   Page *page = GetLeafPage(key);
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
   for (int i = 0; i < leaf_page->GetSize(); ++i) {
-    //std::cout << leaf_page->KeyAt(i) <<std::endl;
-    if (comparator_(leaf_page->KeyAt(i), key) == 0) {  
+    // std::cout << leaf_page->KeyAt(i) <<std::endl;
+    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
       result->emplace_back(leaf_page->ValueAt(i));
       found = true;
     }
@@ -87,7 +87,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transaction *transaction) -> bool {
-    //std::cout << "insert: " << key << std::endl;
+  // std::cout << "insert: " << key << std::endl;
   // 如果为空树 创建叶节点为根节点
   if (IsEmpty()) {
     Page *page = buffer_pool_manager_->NewPage(&root_page_id_);
@@ -113,18 +113,14 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
     }
   }
 
-
   // key不在树中
   leaf_page->Insert(key, value, comparator_);
-
 
   // 插入key不会发生分裂时
   if (leaf_page->GetSize() < leaf_max_size_) {
     buffer_pool_manager_->UnpinPage(leaf_page->GetPageId(), true);
     return true;
   }
-
-
 
   // 插入树中发生分裂
   page_id_t new_leave_page_id;
@@ -137,8 +133,6 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
   leaf_page->SetNextPageId(new_leave_page_id);
   // 移动当前页面(leaf_max_size_+1)/2后的元素到目标页面
   leaf_page->MoveDataTo(new_leaf_page, (leaf_max_size_ + 1) / 2);
-
-
 
   BPlusTreePage *old_tree_page = leaf_page;
   BPlusTreePage *new_tree_page = new_leaf_page;
@@ -230,7 +224,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
  */
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
-    //std::cout << "remove: " << key << std::endl;
+  // std::cout << "remove: " << key << std::endl;
   if (IsEmpty()) {
     return;
   }
