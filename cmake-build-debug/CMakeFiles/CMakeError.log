@@ -1,0 +1,50 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: C:/Users/34279/Desktop/leveldb/cmu15445/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):D:/CLion 2022.3.3/bin/ninja/win/x64/ninja.exe cmTC_daf42 && [1/2] Building C object CMakeFiles/cmTC_daf42.dir/src.c.obj
+[2/2] Linking C executable cmTC_daf42.exe
+FAILED: cmTC_daf42.exe 
+cmd.exe /C "cd . && C:\mingw\mingw64\bin\gcc.exe   CMakeFiles/cmTC_daf42.dir/src.c.obj -o cmTC_daf42.exe -Wl,--out-implib,libcmTC_daf42.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+C:/mingw/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: CMakeFiles/cmTC_daf42.dir/src.c.obj:src.c:(.text+0x35): undefined reference to `pthread_create'
+C:/mingw/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: CMakeFiles/cmTC_daf42.dir/src.c.obj:src.c:(.text+0x41): undefined reference to `pthread_detach'
+C:/mingw/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: CMakeFiles/cmTC_daf42.dir/src.c.obj:src.c:(.text+0x4d): undefined reference to `pthread_cancel'
+C:/mingw/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: CMakeFiles/cmTC_daf42.dir/src.c.obj:src.c:(.text+0x5e): undefined reference to `pthread_join'
+C:/mingw/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: CMakeFiles/cmTC_daf42.dir/src.c.obj:src.c:(.text+0x68): undefined reference to `pthread_exit'
+collect2.exe: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: C:/Users/34279/Desktop/leveldb/cmu15445/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):D:/CLion 2022.3.3/bin/ninja/win/x64/ninja.exe cmTC_4a050 && [1/2] Building C object CMakeFiles/cmTC_4a050.dir/CheckFunctionExists.c.obj
+[2/2] Linking C executable cmTC_4a050.exe
+FAILED: cmTC_4a050.exe 
+cmd.exe /C "cd . && C:\mingw\mingw64\bin\gcc.exe -DCHECK_FUNCTION_EXISTS=pthread_create  CMakeFiles/cmTC_4a050.dir/CheckFunctionExists.c.obj -o cmTC_4a050.exe -Wl,--out-implib,libcmTC_4a050.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lpthreads  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+C:/mingw/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lpthreads: No such file or directory
+collect2.exe: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+
