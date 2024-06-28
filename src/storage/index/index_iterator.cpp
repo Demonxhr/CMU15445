@@ -64,6 +64,16 @@ auto INDEXITERATOR_TYPE::operator++() -> INDEXITERATOR_TYPE & {
   return *this;
 }
 
+INDEX_TEMPLATE_ARGUMENTS
+auto INDEXITERATOR_TYPE::operator=(IndexIterator &&other) noexcept ->IndexIterator & {
+    std::swap(page_id_,other.page_id_);
+    std::swap(page_,other.page_);
+    std::swap(leaf_page_,other.leaf_page_);
+    std::swap(index_in_leaf_,other.index_in_leaf_);
+    std::swap(buffer_pool_manager_,other.buffer_pool_manager_);
+    return *this;
+}
+
 template class IndexIterator<GenericKey<4>, RID, GenericComparator<4>>;
 
 template class IndexIterator<GenericKey<8>, RID, GenericComparator<8>>;

@@ -203,7 +203,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transaction *transaction) -> bool {
-  std::cout << "insert: " << key << std::endl;
+  //std::cout << "insert: " << key << std::endl;
   // 如果为空树 创建叶节点为根节点
   // 锁住根节点id  创建根节点时，防止重复创建
   root_latch_.RLock();
@@ -231,15 +231,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
   }
 
   Page *page = GetLeafPage(key,Operation::Insert,transaction);
-//  auto page_set = transaction->GetPageSet();
-//    for (auto it = page_set->rbegin(); it != page_set->rend();++it) {
-//        Page *page11 = *it;
-//        if (page11== nullptr) {
-//            std::cout << "root" << " ";
-//        }
-//        else std::cout << page11->GetPageId() << " ";
-//    }
-//    std::cout << std::endl;
+
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
   // 叶子节点从0个点开始遍历  因为叶子节点不需要指向下一个节点
   for (int i = 0; i < leaf_page->GetSize(); ++i) {
@@ -292,15 +284,15 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
       new_tree_page->SetParentPageId(root_page_id_);
       // 根节点变了需要更新
       UpdateRootPageId();
-      // std::cout << "new_root_page "
-      //           << "size: " << new_root_page->GetSize() << ", "
-      //           << "maxsize: " << new_root_page->GetMaxSize() << std::endl;
-      // std::cout << "old_tree_page "
-      //           << "size: " << old_tree_page->GetSize() << ", "
-      //           << "maxsize: " << old_tree_page->GetMaxSize() << std::endl;
-      // std::cout << "new_tree_page "
-      //           << "size: " << new_tree_page->GetSize() << ", "
-      //           << "maxsize: " << new_tree_page->GetMaxSize() << std::endl;
+       std::cout << "new_root_page "
+                 << "size: " << new_root_page->GetSize() << ", "
+                 << "maxsize: " << new_root_page->GetMaxSize() << std::endl;
+       std::cout << "old_tree_page "
+                 << "size: " << old_tree_page->GetSize() << ", "
+                 << "maxsize: " << old_tree_page->GetMaxSize() << std::endl;
+       std::cout << "new_tree_page "
+                 << "size: " << new_tree_page->GetSize() << ", "
+                 << "maxsize: " << new_tree_page->GetMaxSize() << std::endl;
       // unpin 根节点
       buffer_pool_manager_->UnpinPage(new_root_page->GetPageId(), true);
       buffer_pool_manager_->UnpinPage(new_tree_page->GetPageId(), true);
@@ -381,7 +373,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
  */
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
-  std::cout << "remove: " << key << std::endl;
+  //std::cout << "remove: " << key << std::endl;
   root_latch_.RLock();
   if (IsEmpty()) {
     root_latch_.RUnlock();
@@ -638,8 +630,10 @@ auto BPLUSTREE_TYPE::Begin() -> INDEXITERATOR_TYPE {
     auto tree_page = reinterpret_cast<BPlusTreePage *>(page->GetData());
     if (tree_page->IsLeafPage()) {
       prev_page->RUnlatch();
+      auto id = tree_page->GetPageId();
+      buffer_pool_manager_->UnpinPage(id,false);
       // 迭代器设计 为初始化pageid index_in_leaf_ 缓存管理器
-      return INDEXITERATOR_TYPE(tree_page->GetPageId(), 0, buffer_pool_manager_);
+      return INDEXITERATOR_TYPE(id, 0, buffer_pool_manager_);
     }
     auto internal_page = static_cast<InternalPage *>(tree_page);
     if (internal_page == nullptr) {
