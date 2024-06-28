@@ -40,7 +40,9 @@ INDEX_TEMPLATE_ARGUMENTS
 auto INDEXITERATOR_TYPE::operator*() -> const MappingType & {
   BUSTUB_ASSERT(page_id_ != INVALID_PAGE_ID, "page_id_ != INVALID_PAGE_ID");
   BUSTUB_ASSERT(page_id_ == leaf_page_->GetPageId(), "page_id_ == leaf_page_->GetPageId()");
-  std::cout << leaf_page_->KeyAt(index_in_leaf_) << std::endl;
+  auto index = leaf_page_->KeyValueAt(index_in_leaf_).first;
+  if (index.ToString() % 5 == 0)
+    std::cout << leaf_page_->KeyAt(index_in_leaf_) << std::endl;
   return leaf_page_->KeyValueAt(index_in_leaf_);
 }
 

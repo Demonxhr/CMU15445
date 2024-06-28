@@ -414,7 +414,7 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
         }
 
         ASSERT_EQ(size, perserved_keys.size());
-
+        std::cout << size << std::endl;
         bpm->UnpinPage(HEADER_PAGE_ID, true);
         delete disk_manager;
         delete bpm;
