@@ -333,6 +333,24 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
   remove("test.log");
 }
 
+    void LookupHelper(BPlusTree<GenericKey<8>, RID, GenericComparator<8>> *tree, const std::vector<int64_t> &keys,
+                      uint64_t tid, __attribute__((unused)) uint64_t thread_itr = 0) {
+        auto *transaction = new Transaction(static_cast<txn_id_t>(tid));
+        GenericKey<8> index_key;
+        RID rid;
+        for (auto key : keys) {
+            int64_t value = key & 0xFFFFFFFF;
+            rid.Set(static_cast<int32_t>(key >> 32), value);
+            index_key.SetFromInteger(key);
+            std::vector<RID> result;
+            bool res = tree->GetValue(index_key, &result, transaction);
+            ASSERT_EQ(res, true);
+            ASSERT_EQ(result.size(), 1);
+            ASSERT_EQ(result[0], rid);
+        }
+        delete transaction;
+    }
+
     TEST(BPlusTreeConcurrentTest, MixTest2) {
         // create KeyComparator and index schema
         auto key_schema = ParseCreateStatement("a bigint");
@@ -340,48 +358,60 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
 
         auto *disk_manager = new DiskManager("test.db");
         BufferPoolManager *bpm = new BufferPoolManagerInstance(50, disk_manager);
-        // create b+ tree
-        BPlusTree<GenericKey<8>, RID, GenericComparator<8>> tree("foo_pk", bpm, comparator);
-        GenericKey<8> index_key;
-        int64_t start_key = 0;
-        index_key.SetFromInteger(start_key);
+
         // create and fetch header_page
         page_id_t page_id;
-        auto header_page = bpm->NewPage(&page_id);
+        auto *header_page = bpm->NewPage(&page_id);
         (void)header_page;
-        // first, populate index
-        std::vector<int64_t> keys;// = {1, 2, 3, 4, 5};
-        for(int64_t i = 0; i < 4000; ++i) {
-            keys.push_back(i);
+
+        // create b+ tree
+        BPlusTree<GenericKey<8>, RID, GenericComparator<8>> tree("foo_pk", bpm, comparator);
+
+        // Add perserved_keys
+        std::vector<int64_t> perserved_keys;
+        std::vector<int64_t> dynamic_keys;
+        int64_t total_keys = 10000;
+        int64_t sieve = 3;
+        for (int64_t i = 1; i <= total_keys; i++) {
+            if (i % sieve == 0) {
+                perserved_keys.push_back(i);
+            } else {
+                dynamic_keys.push_back(i);
+            }
+        }
+        InsertHelper(&tree, perserved_keys, 1);
+        // Check there are 1000 keys in there
+        size_t size;
+
+        auto insert_task = [&](int tid) { InsertHelper(&tree, dynamic_keys, tid); };
+        auto delete_task = [&](int tid) { DeleteHelper(&tree, dynamic_keys, tid); };
+        auto lookup_task = [&](int tid) { LookupHelper(&tree, perserved_keys, tid); };
+
+        std::vector<std::thread> threads;
+        std::vector<std::function<void(int)>> tasks;
+        tasks.emplace_back(insert_task);
+        tasks.emplace_back(delete_task);
+        tasks.emplace_back(lookup_task);
+
+        size_t num_threads = 6;
+        for (size_t i = 0; i < num_threads; i++) {
+            threads.emplace_back(std::thread{tasks[i % tasks.size()], i});
+        }
+        for (size_t i = 0; i < num_threads; i++) {
+            threads[i].join();
         }
 
-        LaunchParallelTest(4, InsertHelper, &tree, keys);
-        //std::this_thread::sleep_for(std::chrono::seconds(5));
-        int64_t size = 0;
-        for (auto iterator = tree.Begin(index_key); iterator != tree.End(); ++iterator) {
-            size = size + 1;
-        }
-
-        EXPECT_EQ(size, 4000);
-
-        // concurrent delete
-        std::vector<int64_t> remove_keys;// = {1, 4, 3, 5, 6};
-        for(int64_t i = 1; i <= 2000; ++i) {
-            remove_keys.push_back(i);
-        }
-        std::cout << "111111" << std::endl;
-        LaunchParallelTest(2, DeleteHelper, &tree, remove_keys);
-        std::cout << "222222" << std::endl;
-
-        start_key = 0;
+        // Check all reserved keys exist
         size = 0;
-        index_key.SetFromInteger(start_key);
-        //std::this_thread::sleep_for(std::chrono::seconds(5));
-        for (auto iterator = tree.Begin(index_key); iterator != tree.End(); ++iterator) {
-            size = size + 1;
+
+        for (auto iter = tree.Begin(); iter != tree.End(); ++iter) {
+            const auto &pair = *iter;
+            if ((pair.first).ToString() % sieve == 0) {
+                size++;
+            }
         }
 
-        EXPECT_EQ(size, 2000);
+        ASSERT_EQ(size, perserved_keys.size());
 
         bpm->UnpinPage(HEADER_PAGE_ID, true);
         delete disk_manager;
@@ -389,5 +419,6 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
         remove("test.db");
         remove("test.log");
     }
+
 
 }  // namespace bustub

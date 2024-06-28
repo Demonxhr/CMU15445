@@ -203,7 +203,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transaction *transaction) -> bool {
-  //std::cout << "insert: " << key << std::endl;
+  std::cout << "insert: " << key << std::endl;
   // 如果为空树 创建叶节点为根节点
   // 锁住根节点id  创建根节点时，防止重复创建
   root_latch_.RLock();
@@ -381,7 +381,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
  */
 INDEX_TEMPLATE_ARGUMENTS
 void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
-  // std::cout << "remove: " << key << std::endl;
+  std::cout << "remove: " << key << std::endl;
   root_latch_.RLock();
   if (IsEmpty()) {
     root_latch_.RUnlock();
@@ -534,6 +534,9 @@ void BPLUSTREE_TYPE::HandleUnderflow(BPlusTreePage *page, Transaction *transacti
   // 子节点下溢出解决后导致父节点下溢出  递归解决
   if (parent_page->GetSize() < parent_page->GetMinSize()) {
     HandleUnderflow(parent_page, transaction);
+  }
+  if (parent_page_unpin) {
+      buffer_pool_manager_->UnpinPage(parent_page->GetPageId(), true);
   }
 }
 
