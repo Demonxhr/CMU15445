@@ -404,6 +404,12 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
     HandleUnderflow(leaf_page, transaction);
   }
   ReleaseWLatches(transaction);
+
+  auto deleted_page = transaction->GetDeletedPageSet();
+  for (auto &pid : *deleted_page) {
+      buffer_pool_manager_->DeletePage(pid);
+  }
+  deleted_page->clear();
 }
 
 INDEX_TEMPLATE_ARGUMENTS
@@ -439,7 +445,7 @@ void BPLUSTREE_TYPE::MergePage(BPlusTreePage *left_page, BPlusTreePage *right_pa
     // 从父节点中删除合并完后的右节点
     parent_page->RemoveAt(parent_page->FindValue(right_page->GetPageId()));
     transaction->AddIntoDeletedPageSet(right_page->GetPageId());
-    buffer_pool_manager_->DeletePage(right_page->GetPageId());
+    //buffer_pool_manager_->DeletePage(right_page->GetPageId());
   } else {
     auto left_internal_page = static_cast<InternalPage *>(left_page);
     auto right_internal_page = static_cast<InternalPage *>(right_page);
@@ -450,7 +456,7 @@ void BPLUSTREE_TYPE::MergePage(BPlusTreePage *left_page, BPlusTreePage *right_pa
     // 从父节点中删除合并完后的右节点
     parent_page->RemoveAt(parent_page->FindValue(right_page->GetPageId()));
     transaction->AddIntoDeletedPageSet(right_page->GetPageId());
-    buffer_pool_manager_->DeletePage(right_page->GetPageId());
+    //buffer_pool_manager_->DeletePage(right_page->GetPageId());
     for (int i = 1; i < right_internal_page->GetSize(); ++i) {
       left_internal_page->Insert(right_internal_page->KeyAt(i), right_internal_page->ValueAt(i), comparator_);
       SetPageParentId(right_internal_page->ValueAt(i), left_internal_page->GetPageId());
@@ -609,12 +615,26 @@ void BPLUSTREE_TYPE::GetSiblings(BPlusTreePage *page, page_id_t &left_sibling_id
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Begin() -> INDEXITERATOR_TYPE {
+    root_latch_.RLock();
+    if (IsEmpty()) {
+        root_latch_.RUnlock();
+        return End();
+    }
   // 从根节点向下找到第一个叶子节点 返回该节点的迭代器
   page_id_t next_page_id = root_page_id_;
+  Page *prev_page = nullptr;
   while (true) {
     Page *page = buffer_pool_manager_->FetchPage(next_page_id);
+    page->RLatch();
+    if (prev_page == nullptr) {
+        root_latch_.RUnlock();
+    } else {
+        prev_page->RUnlatch();
+    }
+    prev_page = page;
     auto tree_page = reinterpret_cast<BPlusTreePage *>(page->GetData());
     if (tree_page->IsLeafPage()) {
+      prev_page->RUnlatch();
       // 迭代器设计 为初始化pageid index_in_leaf_ 缓存管理器
       return INDEXITERATOR_TYPE(tree_page->GetPageId(), 0, buffer_pool_manager_);
     }
@@ -635,6 +655,7 @@ auto BPLUSTREE_TYPE::Begin() -> INDEXITERATOR_TYPE {
  */
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::Begin(const KeyType &key) -> INDEXITERATOR_TYPE {
+  root_latch_.RLock();
   Page *page = GetLeafPage(key,Operation::Read, nullptr);
 
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
