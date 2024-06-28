@@ -72,7 +72,7 @@ class BPlusTree {
   auto GetRootPageId() -> page_id_t;
 
   // return the leaf page
-  auto GetLeafPage(const KeyType &key,Operation op,Transaction *transaction) -> Page *;
+  auto GetLeafPage(const KeyType &key,Operation op,Transaction *transaction, bool first_pass = true) -> Page *;
 
   auto GetPage(page_id_t page_id, Transaction *transaction, bool *need_unpin) -> Page *;
   // 返回节点是否安全
