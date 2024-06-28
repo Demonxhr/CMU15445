@@ -27,7 +27,11 @@ INDEXITERATOR_TYPE::IndexIterator(page_id_t page_id, page_id_t index_in_leaf, Bu
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-INDEXITERATOR_TYPE::~IndexIterator() = default;  // NOLINT
+INDEXITERATOR_TYPE::~IndexIterator() {
+    if (page_id_ != INVALID_PAGE_ID) {
+        buffer_pool_manager_->UnpinPage(page_id_,true);
+    }
+}//= default;  // NOLINT
 
 INDEX_TEMPLATE_ARGUMENTS
 auto INDEXITERATOR_TYPE::IsEnd() -> bool { return page_id_ == INVALID_PAGE_ID; }
@@ -36,6 +40,7 @@ INDEX_TEMPLATE_ARGUMENTS
 auto INDEXITERATOR_TYPE::operator*() -> const MappingType & {
   BUSTUB_ASSERT(page_id_ != INVALID_PAGE_ID, "page_id_ != INVALID_PAGE_ID");
   BUSTUB_ASSERT(page_id_ == leaf_page_->GetPageId(), "page_id_ == leaf_page_->GetPageId()");
+  std::cout << leaf_page_->KeyAt(index_in_leaf_) << std::endl;
   return leaf_page_->KeyValueAt(index_in_leaf_);
 }
 

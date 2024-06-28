@@ -379,9 +379,9 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
                 dynamic_keys.push_back(i);
             }
         }
-        std::cout << "1111111111111111" << std::endl;
+
         InsertHelper(&tree, perserved_keys, 1);
-        std::cout << "2222222222222" << std::endl;
+
         // Check there are 1000 keys in there
         size_t size;
 
