@@ -405,11 +405,13 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key, Transaction *transaction) {
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-void BPLUSTREE_TYPE::UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id) {
+void BPLUSTREE_TYPE::UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id,Page* left_page,Page* right_page) {
   if (left_sibling_id != INVALID_PAGE_ID) {
+    left_page->WUnlatch();
     buffer_pool_manager_->UnpinPage(left_sibling_id, true);
   }
   if (right_sibling_id != INVALID_PAGE_ID) {
+    right_page->WUnlatch();
     buffer_pool_manager_->UnpinPage(right_sibling_id, true);
   }
 }
@@ -489,13 +491,25 @@ void BPLUSTREE_TYPE::HandleUnderflow(BPlusTreePage *page, Transaction *transacti
   }
   BPlusTreePage *left_sibling_page = nullptr;
   BPlusTreePage *right_sibling_page = nullptr;
+  Page* left_sibling_page_1 = nullptr;
+  Page* right_sibling_page_1 = nullptr;
+
+  // 顺序加锁
+  Page* mpage = reinterpret_cast<Page *>(page);
+  mpage->WUnlatch();
   // 优先左边
   if (left_sibling_id != INVALID_PAGE_ID) {
-    left_sibling_page = reinterpret_cast<BPlusTreePage *>(buffer_pool_manager_->FetchPage(left_sibling_id)->GetData());
+    left_sibling_page_1 = buffer_pool_manager_->FetchPage(left_sibling_id);
+    left_sibling_page_1->WLatch();
+    left_sibling_page = reinterpret_cast<BPlusTreePage *>(left_sibling_page_1->GetData());
   }
+      mpage->WLatch();
   if (right_sibling_id != INVALID_PAGE_ID) {
+    right_sibling_page_1 = buffer_pool_manager_->FetchPage(right_sibling_id);
+    right_sibling_page_1->WLatch();
     right_sibling_page =
-        reinterpret_cast<BPlusTreePage *>(buffer_pool_manager_->FetchPage(right_sibling_id)->GetData());
+        reinterpret_cast<BPlusTreePage *>(right_sibling_page_1->GetData());
+        
   }
   bool parent_page_unpin;
 //  auto parent_page =
@@ -505,7 +519,7 @@ void BPLUSTREE_TYPE::HandleUnderflow(BPlusTreePage *page, Transaction *transacti
 
   if (TryBorrow(page, left_sibling_page, parent_page, true) ||
       TryBorrow(page, right_sibling_page, parent_page, false)) {
-    UnpinSiblings(left_sibling_id, right_sibling_id);
+    UnpinSiblings(left_sibling_id, right_sibling_id,left_sibling_page_1,right_sibling_page_1);
     if (parent_page_unpin) {
         buffer_pool_manager_->UnpinPage(parent_page->GetPageId(), true);
     }
@@ -517,12 +531,13 @@ void BPLUSTREE_TYPE::HandleUnderflow(BPlusTreePage *page, Transaction *transacti
   if (left_sibling_page != nullptr) {
     left_page = left_sibling_page;
     right_page = page;
+    
   } else {
     left_page = page;
     right_page = right_sibling_page;
   }
   MergePage(left_page, right_page, parent_page,transaction);
-  UnpinSiblings(left_sibling_id, right_sibling_id);
+  UnpinSiblings(left_sibling_id, right_sibling_id,left_sibling_page_1,right_sibling_page_1);
   // 子节点下溢出解决后导致父节点下溢出  递归解决
   if (parent_page->GetSize() < parent_page->GetMinSize()) {
     HandleUnderflow(parent_page, transaction);

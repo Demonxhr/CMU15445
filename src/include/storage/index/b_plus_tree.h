@@ -54,7 +54,7 @@ class BPlusTree {
 
   void HandleUnderflow(BPlusTreePage *page, Transaction *transaction);
 
-  void UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id);
+  void UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id,Page* left_page,Page* right_page);
 
   void SetPageParentId(page_id_t child_pageid, page_id_t parent_pageid);
 

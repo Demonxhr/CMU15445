@@ -381,7 +381,8 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
         }
 
         InsertHelper(&tree, perserved_keys, 1);
-
+        LookupHelper(&tree, perserved_keys,1);
+        std::cout << "ok" << std::endl;
         // Check there are 1000 keys in there
         size_t size;
 
@@ -402,17 +403,21 @@ TEST(BPlusTreeConcurrentTest, DISABLED_MixTest) {
         for (size_t i = 0; i < num_threads; i++) {
             threads[i].join();
         }
-
+        //LookupHelper(&tree, perserved_keys,1);
         // Check all reserved keys exist
         size = 0;
-
+        std::vector<int> num(10001,0);
         for (auto iter = tree.Begin(); iter != tree.End(); ++iter) {
             const auto &pair = *iter;
             if ((pair.first).ToString() % sieve == 0) {
+                num[(pair.first).ToString()]++;
                 size++;
             }
         }
-
+        for (int i = 1; i < 10001; ++i) {
+            if (num[i] == 2) std::cout << "2:" << i << std::endl;
+            else if(num[i] == 0 && i%5==0) std::cout << "0: " << i << std::endl;
+        }
         ASSERT_EQ(size, perserved_keys.size());
         std::cout << size << std::endl;
         bpm->UnpinPage(HEADER_PAGE_ID, true);
