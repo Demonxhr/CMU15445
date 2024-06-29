@@ -109,7 +109,6 @@ auto BufferPoolManagerInstance::UnpinPgImp(page_id_t page_id, bool is_dirty) -> 
     // 没人使用  可以被换出
     replacer_->SetEvictable(frame_id, true);
   }
-
   if (is_dirty) {
     pages_[frame_id].is_dirty_ = is_dirty;
   }
