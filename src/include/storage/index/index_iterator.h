@@ -33,7 +33,7 @@ class IndexIterator {
 
   auto operator++() -> IndexIterator &;
 
-  auto operator=(IndexIterator &&other) noexcept ->IndexIterator &;
+  auto operator=(IndexIterator &&other) noexcept -> IndexIterator &;
 
   auto operator==(const IndexIterator &itr) const -> bool {
     return page_id_ == itr.page_id_ && index_in_leaf_ == itr.index_in_leaf_;

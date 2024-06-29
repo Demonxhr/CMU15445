@@ -42,7 +42,7 @@ class BPlusTree {
   explicit BPlusTree(std::string name, BufferPoolManager *buffer_pool_manager, const KeyComparator &comparator,
                      int leaf_max_size = LEAF_PAGE_SIZE, int internal_max_size = INTERNAL_PAGE_SIZE);
 
-  enum class Operation { Read, Insert, Remove};
+  enum class Operation { Read, Insert, Remove };
   // Returns true if this B+ tree has no keys and values.
   auto IsEmpty() const -> bool;
 
@@ -54,11 +54,12 @@ class BPlusTree {
 
   void HandleUnderflow(BPlusTreePage *page, Transaction *transaction);
 
-  void UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id,Page* left_page,Page* right_page);
+  void UnpinSiblings(page_id_t left_sibling_id, page_id_t right_sibling_id, Page *left_page, Page *right_page);
 
   void SetPageParentId(page_id_t child_pageid, page_id_t parent_pageid);
 
-  void MergePage(BPlusTreePage *left_page, BPlusTreePage *right_page, InternalPage *parent_page,Transaction *transaction);
+  void MergePage(BPlusTreePage *left_page, BPlusTreePage *right_page, InternalPage *parent_page,
+                 Transaction *transaction);
 
   auto TryBorrow(BPlusTreePage *page, BPlusTreePage *sibling_page, InternalPage *parent_page, bool sibling_at_left)
       -> bool;
@@ -72,11 +73,11 @@ class BPlusTree {
   auto GetRootPageId() -> page_id_t;
 
   // return the leaf page
-  auto GetLeafPage(const KeyType &key,Operation op,Transaction *transaction, bool first_pass = true) -> Page *;
+  auto GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass = true) -> Page *;
 
   auto GetPage(page_id_t page_id, Transaction *transaction, bool *need_unpin) -> Page *;
   // 返回节点是否安全
-  auto IsPageSafe(BPlusTreePage *tree_page,Operation op) -> bool;
+  auto IsPageSafe(BPlusTreePage *tree_page, Operation op) -> bool;
 
   // 释放所有父节点的写锁
   void ReleaseWLatches(Transaction *transaction);

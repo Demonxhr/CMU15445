@@ -28,10 +28,10 @@ INDEXITERATOR_TYPE::IndexIterator(page_id_t page_id, page_id_t index_in_leaf, Bu
 
 INDEX_TEMPLATE_ARGUMENTS
 INDEXITERATOR_TYPE::~IndexIterator() {
-    if (page_id_ != INVALID_PAGE_ID) {
-        buffer_pool_manager_->UnpinPage(page_id_,true);
-    }
-}//= default;  // NOLINT
+  if (page_id_ != INVALID_PAGE_ID) {
+    buffer_pool_manager_->UnpinPage(page_id_, true);
+  }
+}  //= default;  // NOLINT
 
 INDEX_TEMPLATE_ARGUMENTS
 auto INDEXITERATOR_TYPE::IsEnd() -> bool { return page_id_ == INVALID_PAGE_ID; }
@@ -40,9 +40,9 @@ INDEX_TEMPLATE_ARGUMENTS
 auto INDEXITERATOR_TYPE::operator*() -> const MappingType & {
   BUSTUB_ASSERT(page_id_ != INVALID_PAGE_ID, "page_id_ != INVALID_PAGE_ID");
   BUSTUB_ASSERT(page_id_ == leaf_page_->GetPageId(), "page_id_ == leaf_page_->GetPageId()");
-//  auto index = leaf_page_->KeyValueAt(index_in_leaf_).first;
-//  if (index.ToString() % 5 == 0)
-//    std::cout << leaf_page_->KeyAt(index_in_leaf_) << std::endl;
+  //  auto index = leaf_page_->KeyValueAt(index_in_leaf_).first;
+  //  if (index.ToString() % 5 == 0)
+  //    std::cout << leaf_page_->KeyAt(index_in_leaf_) << std::endl;
   return leaf_page_->KeyValueAt(index_in_leaf_);
 }
 
@@ -72,13 +72,13 @@ auto INDEXITERATOR_TYPE::operator++() -> INDEXITERATOR_TYPE & {
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-auto INDEXITERATOR_TYPE::operator=(IndexIterator &&other) noexcept ->IndexIterator & {
-    std::swap(page_id_,other.page_id_);
-    std::swap(page_,other.page_);
-    std::swap(leaf_page_,other.leaf_page_);
-    std::swap(index_in_leaf_,other.index_in_leaf_);
-    std::swap(buffer_pool_manager_,other.buffer_pool_manager_);
-    return *this;
+auto INDEXITERATOR_TYPE::operator=(IndexIterator &&other) noexcept -> IndexIterator & {
+  std::swap(page_id_, other.page_id_);
+  std::swap(page_, other.page_);
+  std::swap(leaf_page_, other.leaf_page_);
+  std::swap(index_in_leaf_, other.index_in_leaf_);
+  std::swap(buffer_pool_manager_, other.buffer_pool_manager_);
+  return *this;
 }
 
 template class IndexIterator<GenericKey<4>, RID, GenericComparator<4>>;
