@@ -127,7 +127,9 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
     if (comparator_(internal_page->KeyAt(internal_page->GetSize() - 1), key) <= 0) {
       next_page_id = internal_page->ValueAt(internal_page->GetSize() - 1);
     } else {
-      int i = 1, j = internal_page->GetSize() - 1, mid;
+      int i = 1;
+      int j = internal_page->GetSize() - 1;
+      int mid;
       while (i < j) {
         mid = i + (j - i) / 2;
         if (comparator_(internal_page->KeyAt(mid), key) < 0) {
