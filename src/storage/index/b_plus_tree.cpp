@@ -122,15 +122,36 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
       }
       return page;
     }
+
     auto internal_page = static_cast<InternalPage *>(tree_page);
-    int size = internal_page->GetSize();
-    next_page_id = internal_page->ValueAt(size - 1);
-    for (int i = 1; i < size; ++i) {
-      if (comparator_(internal_page->KeyAt(i), key) > 0) {
-        next_page_id = internal_page->ValueAt(i - 1);
-        break;
-      }
+    if (comparator_(internal_page->KeyAt(internal_page->GetSize()-1), key) <= 0) {
+        next_page_id = internal_page->ValueAt(internal_page->GetSize() - 1);
+    } else {
+        int i = 1, j = internal_page->GetSize() -1,mid;
+        while(i < j) {
+            mid = i + (j-i)/2;
+            if (comparator_(internal_page->KeyAt(mid), key) < 0) {
+                i = mid + 1;
+            } else if (comparator_(internal_page->KeyAt(mid), key) > 0) {
+                j = mid;
+            } else {
+                next_page_id = internal_page->ValueAt(mid);
+                break;
+            }
+        }
+        if (i == j && comparator_(internal_page->KeyAt(mid), key) != 0) {
+            next_page_id = internal_page->ValueAt(j-1);
+        }
     }
+
+//    auto internal_page = static_cast<InternalPage *>(tree_page);
+//    next_page_id = internal_page->ValueAt(internal_page->GetSize() - 1);
+//    for (int i = 1; i < internal_page->GetSize(); ++i) {
+//      if (comparator_(internal_page->KeyAt(i), key) > 0) {
+//        next_page_id = internal_page->ValueAt(i - 1);
+//        break;
+//      }
+//    }
     prev_page = page;
   }
 }
