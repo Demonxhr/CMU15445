@@ -123,8 +123,9 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
       return page;
     }
     auto internal_page = static_cast<InternalPage *>(tree_page);
-    next_page_id = internal_page->ValueAt(internal_page->GetSize() - 1);
-    for (int i = 1; i < internal_page->GetSize(); ++i) {
+    int size = internal_page->GetSize();
+    next_page_id = internal_page->ValueAt(size - 1);
+    for (int i = 1; i < size; ++i) {
       if (comparator_(internal_page->KeyAt(i), key) > 0) {
         next_page_id = internal_page->ValueAt(i - 1);
         break;
