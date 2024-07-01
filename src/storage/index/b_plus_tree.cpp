@@ -202,26 +202,25 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
   int i = 0;
   int j = leaf_page->GetSize() - 1;
   while (i <= j) {
-      int mid = i + (j-i)/2;
-      auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
-      if (flag_com == 0) {
-          result->emplace_back(leaf_page->ValueAt(mid));
-          found = true;
-          break;
-      } else if (flag_com < 0) {
-          i = mid + 1;
-      } else {
-          j = mid - 1;
-      }
-
+    int mid = i + (j - i) / 2;
+    auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
+    if (flag_com == 0) {
+      result->emplace_back(leaf_page->ValueAt(mid));
+      found = true;
+      break;
+    } else if (flag_com < 0) {
+      i = mid + 1;
+    } else {
+      j = mid - 1;
+    }
   }
-//  for (int i = 0; i < leaf_page->GetSize(); ++i) {
-//    // std::cout << leaf_page->KeyAt(i) <<std::endl;
-//    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
-//      result->emplace_back(leaf_page->ValueAt(i));
-//      found = true;
-//    }
-//  }
+  //  for (int i = 0; i < leaf_page->GetSize(); ++i) {
+  //    // std::cout << leaf_page->KeyAt(i) <<std::endl;
+  //    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
+  //      result->emplace_back(leaf_page->ValueAt(i));
+  //      found = true;
+  //    }
+  //  }
   page->RUnlatch();
   buffer_pool_manager_->UnpinPage(page->GetPageId(), false);
 
@@ -272,28 +271,27 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
   // 叶子节点从0个点开始遍历  因为叶子节点不需要指向下一个节点
 
-
-    int ti = 0;
-    int tj = leaf_page->GetSize() - 1;
-    while (ti <= tj) {
-        int mid = ti + (tj-ti)/2;
-        auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
-        if (flag_com == 0) {
-            ReleaseWLatches(transaction);
-            return false;
-        } else if (flag_com < 0) {
-            ti = mid + 1;
-        } else {
-            tj = mid - 1;
-        }
+  int ti = 0;
+  int tj = leaf_page->GetSize() - 1;
+  while (ti <= tj) {
+    int mid = ti + (tj - ti) / 2;
+    auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
+    if (flag_com == 0) {
+      ReleaseWLatches(transaction);
+      return false;
+    } else if (flag_com < 0) {
+      ti = mid + 1;
+    } else {
+      tj = mid - 1;
     }
-//  for (int i = 0; i < leaf_page->GetSize(); ++i) {
-//    // 如果要插入的节点存在
-//    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
-//      ReleaseWLatches(transaction);
-//      return false;
-//    }
-//  }
+  }
+  //  for (int i = 0; i < leaf_page->GetSize(); ++i) {
+  //    // 如果要插入的节点存在
+  //    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
+  //      ReleaseWLatches(transaction);
+  //      return false;
+  //    }
+  //  }
 
   // key不在树中
   leaf_page->Insert(key, value, comparator_);
