@@ -98,7 +98,8 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::Insert(const KeyType &key, const ValueType &val
       if (comp(array_[mid].first, key) < 0 && comp(array_[mid + 1].first, key) > 0) {
         ins_at = mid + 1;
         break;
-      } else if (comp(array_[mid].first, key) < 0) {
+      }
+      if (comp(array_[mid].first, key) < 0) {
         i = mid + 1;
       } else {
         j = mid - 1;

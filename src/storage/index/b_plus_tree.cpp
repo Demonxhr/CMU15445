@@ -208,7 +208,8 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
       result->emplace_back(leaf_page->ValueAt(mid));
       found = true;
       break;
-    } else if (flag_com < 0) {
+    }
+    if (flag_com < 0) {
       i = mid + 1;
     } else {
       j = mid - 1;
@@ -279,7 +280,8 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
     if (flag_com == 0) {
       ReleaseWLatches(transaction);
       return false;
-    } else if (flag_com < 0) {
+    }
+    if (flag_com < 0) {
       ti = mid + 1;
     } else {
       tj = mid - 1;
