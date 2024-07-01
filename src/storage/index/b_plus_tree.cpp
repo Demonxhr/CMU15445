@@ -76,50 +76,8 @@ void BPLUSTREE_TYPE::ReleaseWLatches(Transaction *transaction) {
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-void BPLUSTREE_TYPE::ReleaseWLatchesInSearch(Transaction *transaction) {
-  if (transaction == nullptr) {
-    return;
-  }
-
-  // 获取事务中存放加锁的page
-  auto page_set = transaction->GetPageSet();
-
-  while (!page_set->empty()) {
-    Page *page = page_set->front();
-    page_set->pop_front();
-    // 空节点 表示锁住根节点id的锁
-    if (page == nullptr) {
-      root_latch_.WUnlock();
-    } else {
-      // 先释放锁 再unpin，不然page指针指向的page可能会发生改变
-      page->WUnlatch();
-      // buffer_pool_manager_->UnpinPage(page->GetPageId(), true);
-    }
-  }
-}
-
-INDEX_TEMPLATE_ARGUMENTS
-void BPLUSTREE_TYPE::UnpinSearchPage(std::unordered_map<page_id_t, Page *> &phash, Transaction *transaction,
-                                     page_id_t pageId) {
-  if (transaction == nullptr) {
-    phash.erase(pageId);
-  } else {
-    auto page_set = transaction->GetPageSet();
-    for (auto it = page_set->begin(); it != page_set->end(); ++it) {
-      Page *page = *it;
-      if (page != nullptr) {
-        phash.erase(page->GetPageId());
-      }
-    }
-  }
-  for (auto &i : phash) {
-    buffer_pool_manager_->UnpinPage(i.first, true);
-  }
-}
-
-INDEX_TEMPLATE_ARGUMENTS
-auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass,
-                                 std::unordered_map<page_id_t, Page *> phash) -> Page * {
+auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass)
+    -> Page * {
   if (transaction == nullptr && op != Operation::Read) {
     throw std::logic_error("Insert or remove operation must be given a not-null transaction.");
   }
@@ -133,15 +91,7 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
   Page *prev_page = nullptr;
 
   while (true) {
-    Page *page;
-    auto it = phash.find(next_page_id);
-    if (it == phash.end()) {
-      page = buffer_pool_manager_->FetchPage(next_page_id);
-      phash[next_page_id] = page;
-    } else {
-      page = it->second;
-    }
-
+    Page *page = buffer_pool_manager_->FetchPage(next_page_id);
     auto tree_page = reinterpret_cast<BPlusTreePage *>(page->GetData());
 
     if (first_pass) {
@@ -153,7 +103,7 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
       }
       if (prev_page != nullptr) {
         prev_page->RUnlatch();
-        // buffer_pool_manager_->UnpinPage(prev_page->GetPageId(), false);
+        buffer_pool_manager_->UnpinPage(prev_page->GetPageId(), false);
       } else {
         root_latch_.RUnlock();
       }
@@ -161,16 +111,15 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
       assert(op != Operation::Read);
       page->WLatch();
       if (IsPageSafe(tree_page, op)) {
-        ReleaseWLatchesInSearch(transaction);
+        ReleaseWLatches(transaction);
       }
       transaction->AddIntoPageSet(page);
     }
     if (tree_page->IsLeafPage()) {
       if (first_pass && !IsPageSafe(tree_page, op)) {
-        ReleaseWLatchesInSearch(transaction);
-        return GetLeafPage(key, op, transaction, false, phash);
+        ReleaseWLatches(transaction);
+        return GetLeafPage(key, op, transaction, false);
       }
-      UnpinSearchPage(phash, transaction, page->GetPageId());
       return page;
     }
 
@@ -253,25 +202,26 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
   int i = 0;
   int j = leaf_page->GetSize() - 1;
   while (i <= j) {
-    int mid = i + (j - i) / 2;
-    auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
-    if (flag_com == 0) {
-      result->emplace_back(leaf_page->ValueAt(mid));
-      found = true;
-      break;
-    } else if (flag_com < 0) {
-      i = mid + 1;
-    } else {
-      j = mid - 1;
-    }
+      int mid = i + (j-i)/2;
+      auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
+      if (flag_com == 0) {
+          result->emplace_back(leaf_page->ValueAt(mid));
+          found = true;
+          break;
+      } else if (flag_com < 0) {
+          i = mid + 1;
+      } else {
+          j = mid - 1;
+      }
+
   }
-  //  for (int i = 0; i < leaf_page->GetSize(); ++i) {
-  //    // std::cout << leaf_page->KeyAt(i) <<std::endl;
-  //    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
-  //      result->emplace_back(leaf_page->ValueAt(i));
-  //      found = true;
-  //    }
-  //  }
+//  for (int i = 0; i < leaf_page->GetSize(); ++i) {
+//    // std::cout << leaf_page->KeyAt(i) <<std::endl;
+//    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
+//      result->emplace_back(leaf_page->ValueAt(i));
+//      found = true;
+//    }
+//  }
   page->RUnlatch();
   buffer_pool_manager_->UnpinPage(page->GetPageId(), false);
 
@@ -322,27 +272,28 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
   auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
   // 叶子节点从0个点开始遍历  因为叶子节点不需要指向下一个节点
 
-  int ti = 0;
-  int tj = leaf_page->GetSize() - 1;
-  while (ti <= tj) {
-    int mid = ti + (tj - ti) / 2;
-    auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
-    if (flag_com == 0) {
-      ReleaseWLatches(transaction);
-      return false;
-    } else if (flag_com < 0) {
-      ti = mid + 1;
-    } else {
-      tj = mid - 1;
+
+    int ti = 0;
+    int tj = leaf_page->GetSize() - 1;
+    while (ti <= tj) {
+        int mid = ti + (tj-ti)/2;
+        auto flag_com = comparator_(leaf_page->KeyAt(mid), key);
+        if (flag_com == 0) {
+            ReleaseWLatches(transaction);
+            return false;
+        } else if (flag_com < 0) {
+            ti = mid + 1;
+        } else {
+            tj = mid - 1;
+        }
     }
-  }
-  //  for (int i = 0; i < leaf_page->GetSize(); ++i) {
-  //    // 如果要插入的节点存在
-  //    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
-  //      ReleaseWLatches(transaction);
-  //      return false;
-  //    }
-  //  }
+//  for (int i = 0; i < leaf_page->GetSize(); ++i) {
+//    // 如果要插入的节点存在
+//    if (comparator_(leaf_page->KeyAt(i), key) == 0) {
+//      ReleaseWLatches(transaction);
+//      return false;
+//    }
+//  }
 
   // key不在树中
   leaf_page->Insert(key, value, comparator_);
