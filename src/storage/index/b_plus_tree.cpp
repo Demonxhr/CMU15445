@@ -76,8 +76,50 @@ void BPLUSTREE_TYPE::ReleaseWLatches(Transaction *transaction) {
 }
 
 INDEX_TEMPLATE_ARGUMENTS
-auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass)
-    -> Page * {
+void BPLUSTREE_TYPE::ReleaseWLatchesInSearch(Transaction *transaction) {
+  if (transaction == nullptr) {
+    return;
+  }
+
+  // 获取事务中存放加锁的page
+  auto page_set = transaction->GetPageSet();
+
+  while (!page_set->empty()) {
+    Page *page = page_set->front();
+    page_set->pop_front();
+    // 空节点 表示锁住根节点id的锁
+    if (page == nullptr) {
+      root_latch_.WUnlock();
+    } else {
+      // 先释放锁 再unpin，不然page指针指向的page可能会发生改变
+      page->WUnlatch();
+      // buffer_pool_manager_->UnpinPage(page->GetPageId(), true);
+    }
+  }
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::UnpinSearchPage(std::unordered_map<page_id_t, Page *> &phash, Transaction *transaction,
+                                     page_id_t pageId) {
+  if (transaction == nullptr) {
+    phash.erase(pageId);
+  } else {
+    auto page_set = transaction->GetPageSet();
+    for (auto it = page_set->begin(); it != page_set->end(); ++it) {
+      Page *page = *it;
+      if (page != nullptr) {
+        phash.erase(page->GetPageId());
+      }
+    }
+  }
+  for (auto &i : phash) {
+    buffer_pool_manager_->UnpinPage(i.first, true);
+  }
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass,
+                                 std::unordered_map<page_id_t, Page *> phash) -> Page * {
   if (transaction == nullptr && op != Operation::Read) {
     throw std::logic_error("Insert or remove operation must be given a not-null transaction.");
   }
@@ -91,7 +133,15 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
   Page *prev_page = nullptr;
 
   while (true) {
-    Page *page = buffer_pool_manager_->FetchPage(next_page_id);
+    Page *page;
+    auto it = phash.find(next_page_id);
+    if (it == phash.end()) {
+      page = buffer_pool_manager_->FetchPage(next_page_id);
+      phash[next_page_id] = page;
+    } else {
+      page = it->second;
+    }
+
     auto tree_page = reinterpret_cast<BPlusTreePage *>(page->GetData());
 
     if (first_pass) {
@@ -103,7 +153,7 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
       }
       if (prev_page != nullptr) {
         prev_page->RUnlatch();
-        buffer_pool_manager_->UnpinPage(prev_page->GetPageId(), false);
+        // buffer_pool_manager_->UnpinPage(prev_page->GetPageId(), false);
       } else {
         root_latch_.RUnlock();
       }
@@ -111,15 +161,16 @@ auto BPLUSTREE_TYPE::GetLeafPage(const KeyType &key, Operation op, Transaction *
       assert(op != Operation::Read);
       page->WLatch();
       if (IsPageSafe(tree_page, op)) {
-        ReleaseWLatches(transaction);
+        ReleaseWLatchesInSearch(transaction);
       }
       transaction->AddIntoPageSet(page);
     }
     if (tree_page->IsLeafPage()) {
       if (first_pass && !IsPageSafe(tree_page, op)) {
-        ReleaseWLatches(transaction);
-        return GetLeafPage(key, op, transaction, false);
+        ReleaseWLatchesInSearch(transaction);
+        return GetLeafPage(key, op, transaction, false, phash);
       }
+      UnpinSearchPage(phash, transaction, page->GetPageId());
       return page;
     }
 

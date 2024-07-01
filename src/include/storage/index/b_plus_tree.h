@@ -12,6 +12,7 @@
 
 #include <queue>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "concurrency/transaction.h"
@@ -73,7 +74,8 @@ class BPlusTree {
   auto GetRootPageId() -> page_id_t;
 
   // return the leaf page
-  auto GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass = true) -> Page *;
+  auto GetLeafPage(const KeyType &key, Operation op, Transaction *transaction, bool first_pass = true,
+                   std::unordered_map<page_id_t, Page *> phash = std::unordered_map<page_id_t, Page *>()) -> Page *;
 
   auto GetPage(page_id_t page_id, Transaction *transaction, bool *need_unpin) -> Page *;
   // 返回节点是否安全
@@ -81,6 +83,12 @@ class BPlusTree {
 
   // 释放所有父节点的写锁
   void ReleaseWLatches(Transaction *transaction);
+
+  // search过程中释放所有父节点的写锁
+  void ReleaseWLatchesInSearch(Transaction *transaction);
+
+  // unpin搜索结束后不使用的节点
+  void UnpinSearchPage(std::unordered_map<page_id_t, Page *> &phash, Transaction *transaction, page_id_t pageId);
 
   // index iterator
   auto Begin() -> INDEXITERATOR_TYPE;
