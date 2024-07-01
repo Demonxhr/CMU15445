@@ -86,9 +86,28 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::Insert(const KeyType &key, const ValueType &val
     throw std::logic_error("B+ Tree leaf page already reached max_size before insert.Should have splitted before");
   }
   int ins_at = 0;
-  while (ins_at < size && comp(array_[ins_at].first, key) < 0) {
-    ++ins_at;
+  if (comp(array_[0].first, key) > 0) {
+    ins_at = 0;
+  } else if (comp(array_[size - 1].first, key) < 0) {
+    ins_at = size;
+  } else {
+    int i = 0;
+    int j = size - 2;
+    while (i <= j) {
+      int mid = i + (j - i) / 2;
+      if (comp(array_[mid].first, key) < 0 && comp(array_[mid + 1].first, key) > 0) {
+        ins_at = mid + 1;
+        break;
+      } else if (comp(array_[mid].first, key) < 0) {
+        i = mid + 1;
+      } else {
+        j = mid - 1;
+      }
+    }
   }
+  //  while (ins_at < size && comp(array_[ins_at].first, key) < 0) {
+  //    ++ins_at;
+  //  }
 
   for (int i = size; i > ins_at; --i) {
     array_[i] = array_[i - 1];
