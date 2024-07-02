@@ -111,10 +111,10 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::Insert(const KeyType &key, const ValueType &val
   //    ++ins_at;
   //  }
   // std::memmove(&array_[ins_at + 1], &array_[ins_at], (size - ins_at) * sizeof(array_[0]));
-  // std::move_backward(&array_[ins_at], &array_[size], &array_[size + 1]);
-  for (int i = size; i > ins_at; --i) {
-    array_[i] = array_[i - 1];
-  }
+    std::move_backward(&array_[ins_at], &array_[size], &array_[size + 1]);
+//    for (int i = size; i > ins_at; --i) {
+//      array_[i] = array_[i - 1];
+//    }
   IncreaseSize(1);
   SetKeyValueAt(ins_at, key, value);
 }
@@ -152,20 +152,20 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::Remove(const KeyType &key, const KeyComparator 
   }
 
   // std::memmove(&array_[index], &array_[index + 1], (size - index - 1) * sizeof(array_[0]));
-  // std::move(&array_[index + 1], &array_[size], &array_[index]);
-  for (int i = index; i < size - 1; ++i) {
-    array_[i] = array_[i + 1];
-  }
+    std::move(&array_[index + 1], &array_[size], &array_[index]);
+//    for (int i = index; i < size - 1; ++i) {
+//      array_[i] = array_[i + 1];
+//    }
   DecreaseSize(1);
 }
 INDEX_TEMPLATE_ARGUMENTS
 void B_PLUS_TREE_LEAF_PAGE_TYPE::RemoveAt(int index) {
   int size = GetSize();
   // std::memmove(&array_[index], &array_[index + 1], (size - index - 1) * sizeof(array_[0]));
-  // std::move(&array_[index + 1], &array_[size], &array_[index]);
-  for (int i = index; i < size - 1; ++i) {
-    array_[i] = array_[i + 1];
-  }
+    std::move(&array_[index + 1], &array_[size], &array_[index]);
+//    for (int i = index; i < size - 1; ++i) {
+//      array_[i] = array_[i + 1];
+//    }
   DecreaseSize(1);
 }
 
