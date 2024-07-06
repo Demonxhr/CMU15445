@@ -13,6 +13,7 @@
 #pragma once
 
 #include <memory>
+#include <queue>
 #include <utility>
 
 #include "execution/executors/abstract_executor.h"
@@ -53,5 +54,6 @@ class LimitExecutor : public AbstractExecutor {
   const LimitPlanNode *plan_;
   /** The child executor from which tuples are obtained */
   std::unique_ptr<AbstractExecutor> child_executor_;
+  std::queue<Tuple> tuple_queue_;
 };
 }  // namespace bustub

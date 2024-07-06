@@ -13,12 +13,15 @@
 #pragma once
 
 #include <memory>
+#include <queue>
 #include <utility>
+#include <vector>
 
 #include "execution/executor_context.h"
 #include "execution/executors/abstract_executor.h"
 #include "execution/plans/nested_loop_join_plan.h"
 #include "storage/table/tuple.h"
+#include "type/value_factory.h"
 
 namespace bustub {
 
@@ -55,6 +58,16 @@ class NestedLoopJoinExecutor : public AbstractExecutor {
  private:
   /** The NestedLoopJoin plan node to be executed. */
   const NestedLoopJoinPlanNode *plan_;
+  std::unique_ptr<AbstractExecutor> left_executor_;
+  std::unique_ptr<AbstractExecutor> right_executor_;
+  std::vector<Tuple> left_tuples_;
+  std::vector<Tuple> right_tuples_;
+  std::queue<Tuple> results_;
+
+  //  Tuple left_tuple_{};
+  //  RID left_rid_{};
+  //  bool has_done_;
+  //  bool left_bool_;
 };
 
 }  // namespace bustub

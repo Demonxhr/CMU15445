@@ -72,12 +72,51 @@ class SimpleAggregationHashTable {
    */
   void CombineAggregateValues(AggregateValue *result, const AggregateValue &input) {
     for (uint32_t i = 0; i < agg_exprs_.size(); i++) {
+      auto &result_value = result->aggregates_[i];
+      auto &input_value = input.aggregates_[i];
+      // 聚合类型 Count(*)、Count()、Sum、Min、Max
       switch (agg_types_[i]) {
         case AggregationType::CountStarAggregate:
+          // 无论Value是否为null，均统计其数目
+          result_value = result_value.Add(ValueFactory::GetIntegerValue(1));
+          break;
         case AggregationType::CountAggregate:
+          // 统计非null的数目
+          if (!input_value.IsNull()) {
+            if (result_value.IsNull()) {
+              result_value = ValueFactory::GetIntegerValue(0);
+            }
+            result_value = result_value.Add(ValueFactory::GetIntegerValue(1));
+          }
+          break;
         case AggregationType::SumAggregate:
+          if (!input_value.IsNull()) {
+            if (result_value.IsNull()) {
+              result_value = input_value;
+            } else {
+              result_value = result_value.Add(input_value);
+            }
+          }
+          break;
         case AggregationType::MinAggregate:
+          if (!input_value.IsNull()) {
+            if (result_value.IsNull()) {
+              result_value = input_value;
+            } else {
+              result_value =
+                  input_value.CompareLessThan(result_value) == CmpBool::CmpTrue ? input_value.Copy() : result_value;
+            }
+          }
+          break;
         case AggregationType::MaxAggregate:
+          if (!input_value.IsNull()) {
+            if (result_value.IsNull()) {
+              result_value = input_value;
+            } else {
+              result_value =
+                  input_value.CompareGreaterThan(result_value) == CmpBool::CmpTrue ? input_value.Copy() : result_value;
+            }
+          }
           break;
       }
     }
@@ -200,7 +239,13 @@ class AggregationExecutor : public AbstractExecutor {
   const AggregationPlanNode *plan_;
   /** The child executor that produces tuples over which the aggregation is computed */
   std::unique_ptr<AbstractExecutor> child_;
+
   /** Simple aggregation hash table */
+  std::unique_ptr<SimpleAggregationHashTable> aht_;
+
+  std::unique_ptr<SimpleAggregationHashTable::Iterator> aht_iterator_;
+
+  bool has_aggregation_ = false;
   // TODO(Student): Uncomment SimpleAggregationHashTable aht_;
   /** Simple aggregation hash table iterator */
   // TODO(Student): Uncomment SimpleAggregationHashTable::Iterator aht_iterator_;
