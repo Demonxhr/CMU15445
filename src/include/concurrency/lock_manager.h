@@ -36,8 +36,8 @@ class TransactionManager;
 class LockManager {
  public:
   enum class LockMode { SHARED, EXCLUSIVE, INTENTION_SHARED, INTENTION_EXCLUSIVE, SHARED_INTENTION_EXCLUSIVE };
-  enum class LockObject {TABLE, ROW};
-  enum class ModifyMode {ADD,DELETE};
+  enum class LockObject { TABLE, ROW };
+  enum class ModifyMode { ADD, DELETE };
   /**
    * Structure to hold a lock request.
    * This could be a lock request on a table OR a row.
@@ -59,7 +59,6 @@ class LockManager {
     RID rid_;
     /** Whether the lock has been granted or not */
     bool granted_{false};
-
   };
 
   class LockRequestQueue {
@@ -298,14 +297,16 @@ class LockManager {
    */
   auto RunCycleDetection() -> void;
 
-  auto  CheckLock(Transaction *txn, LockMode lock_mode, LockObject lock_object) -> bool;
+  auto CheckLock(Transaction *txn, LockMode lock_mode, LockObject lock_object) -> bool;
 
-  auto CheckGrant(const LockRequest* checked_request, std::shared_ptr<LockRequestQueue> request_queue) -> bool;
+  auto CheckGrant(const LockRequest *checked_request, std::shared_ptr<LockRequestQueue> &request_queue) -> bool;
 
-  void ModifyLockSet(Transaction *txn,oid_t oid, LockMode lock_mode, LockObject lock_object, ModifyMode modify_mode,RID rid = RID());
+  void ModifyLockSet(Transaction *txn, oid_t oid, LockMode lock_mode, LockObject lock_object, ModifyMode modify_mode,
+                     RID rid = RID());
 
-  void CheckTableIntentionLock(Transaction *txn, const LockManager::LockMode &lockMode,table_oid_t oid);
-private:
+  void CheckTableIntentionLock(Transaction *txn, const LockManager::LockMode &lockMode, table_oid_t oid);
+
+ private:
   /** Fall 2022 */
   /** Structure that holds lock requests for a given table oid */
   std::unordered_map<table_oid_t, std::shared_ptr<LockRequestQueue>> table_lock_map_;
