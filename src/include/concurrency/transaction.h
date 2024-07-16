@@ -302,73 +302,73 @@ class Transaction {
   }
 
   // 表锁 set
-  void SetTableIntentionSharedLocked(const table_oid_t &oid) { is_table_lock_set_->insert(oid); }
+  // void SetTableIntentionSharedLocked(const table_oid_t &oid) { is_table_lock_set_->insert(oid); }
 
-  void SetTableSharedLocked(const table_oid_t &oid) { s_table_lock_set_->insert(oid); }
+  // void SetTableSharedLocked(const table_oid_t &oid) { s_table_lock_set_->insert(oid); }
 
-  void SetTableIntentionExclusiveLocked(const table_oid_t &oid) { ix_table_lock_set_->insert(oid); }
+  // void SetTableIntentionExclusiveLocked(const table_oid_t &oid) { ix_table_lock_set_->insert(oid); }
 
-  void SetTableExclusiveLocked(const table_oid_t &oid) { x_table_lock_set_->insert(oid); }
+  // void SetTableExclusiveLocked(const table_oid_t &oid) { x_table_lock_set_->insert(oid); }
 
-  void SetTableSharedIntentionExclusiveLocked(const table_oid_t &oid) { six_table_lock_set_->insert(oid); }
+  // void SetTableSharedIntentionExclusiveLocked(const table_oid_t &oid) { six_table_lock_set_->insert(oid); }
 
   // 表解锁 set
-  void SetTableIntentionSharedUnlocked(const table_oid_t &oid) {
-    auto it = is_table_lock_set_->find(oid);
-    is_table_lock_set_->erase(it);
-  }
+  //  void SetTableIntentionSharedUnlocked(const table_oid_t &oid) {
+  //    auto it = is_table_lock_set_->find(oid);
+  //    is_table_lock_set_->erase(it);
+  //  }
 
-  void SetTableSharedUnlocked(const table_oid_t &oid) {
-    auto it = s_table_lock_set_->find(oid);
-    s_table_lock_set_->erase(it);
-  }
+  //  void SetTableSharedUnlocked(const table_oid_t &oid) {
+  //    auto it = s_table_lock_set_->find(oid);
+  //    s_table_lock_set_->erase(it);
+  //  }
 
-  void SetTableIntentionExclusiveUnlocked(const table_oid_t &oid) {
-    auto it = ix_table_lock_set_->find(oid);
-    ix_table_lock_set_->erase(it);
-  }
+  //  void SetTableIntentionExclusiveUnlocked(const table_oid_t &oid) {
+  //    auto it = ix_table_lock_set_->find(oid);
+  //    ix_table_lock_set_->erase(it);
+  //  }
 
-  void SetTableExclusiveUnlocked(const table_oid_t &oid) {
-    auto it = x_table_lock_set_->find(oid);
-    x_table_lock_set_->erase(it);
-  }
+  //  void SetTableExclusiveUnlocked(const table_oid_t &oid) {
+  //    auto it = x_table_lock_set_->find(oid);
+  //    x_table_lock_set_->erase(it);
+  //  }
 
-  void SetTableSharedIntentionExclusiveUnlocked(const table_oid_t &oid) {
-    auto it = six_table_lock_set_->find(oid);
-    six_table_lock_set_->erase(it);
-  }
+  //  void SetTableSharedIntentionExclusiveUnlocked(const table_oid_t &oid) {
+  //    auto it = six_table_lock_set_->find(oid);
+  //    six_table_lock_set_->erase(it);
+  //  }
 
   // 行锁 set
-  void SetRowSharedLocked(const table_oid_t &oid, const RID &rid) {
-    (*s_row_lock_set_)[oid].insert(rid);
-    //      auto it = s_row_lock_set_->find(oid);
-    //      it->second.insert(rid);
-  }
+  //  void SetRowSharedLocked(const table_oid_t &oid, const RID &rid) {
+  //    (*s_row_lock_set_)[oid].insert(rid);
+  //    //      auto it = s_row_lock_set_->find(oid);
+  //    //      it->second.insert(rid);
+  //  }
 
-  void SetRowExclusiveLocked(const table_oid_t &oid, const RID &rid) {
-    (*x_row_lock_set_)[oid].insert(rid);
-    //      auto it = x_row_lock_set_->find(oid);
-    //      it->second.insert(rid);
-  }
+  //  void SetRowExclusiveLocked(const table_oid_t &oid, const RID &rid) {
+  //    (*x_row_lock_set_)[oid].insert(rid);
+  //    //      auto it = x_row_lock_set_->find(oid);
+  //    //      it->second.insert(rid);
+  //  }
 
   // 行解锁 set
-  void SetRowSharedUnLocked(const table_oid_t &oid, const RID &rid) {
-    auto ittable = s_row_lock_set_->find(oid);
-    auto it = ittable->second.find(rid);
-    (*s_row_lock_set_)[oid].erase(it);
-    if (ittable->second.empty()) {
-      s_row_lock_set_->erase(ittable);
-    }
-  }
+  //  void SetRowSharedUnLocked(const table_oid_t &oid, const RID &rid) {
+  //    auto ittable = s_row_lock_set_->find(oid);
+  //    auto it = ittable->second.find(rid);
+  //    (*s_row_lock_set_)[oid].erase(it);
+  //    if (ittable->second.empty()) {
+  //      s_row_lock_set_->erase(ittable);
+  //    }
+  //  }
 
-  void SetRowExclusiveUnLocked(const table_oid_t &oid, const RID &rid) {
-    auto ittable = x_row_lock_set_->find(oid);
-    auto it = ittable->second.find(rid);
-    (*x_row_lock_set_)[oid].erase(it);
-    if (ittable->second.empty()) {
-      x_row_lock_set_->erase(ittable);
-    }
-  }
+  //  void SetRowExclusiveUnLocked(const table_oid_t &oid, const RID &rid) {
+  //    auto ittable = x_row_lock_set_->find(oid);
+  //    auto it = ittable->second.find(rid);
+  //    (*x_row_lock_set_)[oid].erase(it);
+  //    if (ittable->second.empty()) {
+  //      x_row_lock_set_->erase(ittable);
+  //    }
+  //  }
 
   /** @return the current state of the transaction */
   inline auto GetState() -> TransactionState { return state_; }

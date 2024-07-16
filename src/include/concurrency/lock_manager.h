@@ -85,6 +85,17 @@ class LockManager {
     enable_cycle_detection_ = false;
     cycle_detection_thread_->join();
     delete cycle_detection_thread_;
+    for (auto &i : table_lock_map_) {
+      for (auto &j : i.second->request_queue_) {
+        delete j;
+      }
+    }
+
+    for (auto &i : row_lock_map_) {
+      for (auto &j : i.second->request_queue_) {
+        delete j;
+      }
+    }
   }
 
   /**
