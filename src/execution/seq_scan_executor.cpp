@@ -20,7 +20,6 @@ SeqScanExecutor::SeqScanExecutor(ExecutorContext *exec_ctx, const SeqScanPlanNod
 void SeqScanExecutor::Init() {
   // 获取表
   // ExecutorContext *exec_ctx = GetExecutorContext();
-  table_info_ = exec_ctx_->GetCatalog()->GetTable(plan_->GetTableOid());
   auto txn = exec_ctx_->GetTransaction();
   auto lkm = exec_ctx_->GetLockManager();
   // lkm_ = exec_ctx_->GetLockManager();
@@ -32,7 +31,7 @@ void SeqScanExecutor::Init() {
       // 对于读提交和可重复读都是先加意向共享表锁 再加共享行锁
       // 如果加锁失败
       if (!txn->IsTableIntentionExclusiveLocked(plan_->GetTableOid()) &&
-          !lkm->LockTable(txn, LockManager::LockMode::INTENTION_SHARED, table_info_->oid_)) {
+          !lkm->LockTable(txn, LockManager::LockMode::INTENTION_SHARED, plan_->GetTableOid())) {
         txn->SetState(TransactionState::ABORTED);
         throw Exception(ExceptionType::INVALID, "Cant lock table");
       }
@@ -40,7 +39,7 @@ void SeqScanExecutor::Init() {
   } catch (TransactionAbortException &e) {
     throw ExecutionException("execute seq lock table fail");
   }
-
+  table_info_ = exec_ctx_->GetCatalog()->GetTable(plan_->table_name_);
   table_heap_ = table_info_->table_.get();
   table_iterator_ = table_heap_->Begin(exec_ctx_->GetTransaction());
 }
@@ -48,6 +47,12 @@ void SeqScanExecutor::Init() {
 auto SeqScanExecutor::Next(Tuple *tuple, RID *rid) -> bool {
   auto txn = exec_ctx_->GetTransaction();
   auto lkm = exec_ctx_->GetLockManager();
+  while (plan_->filter_predicate_ != nullptr && table_iterator_ != table_heap_->End() &&
+         (!plan_->filter_predicate_->Evaluate(&(*table_iterator_), plan_->OutputSchema())
+               .CastAs(TypeId::BOOLEAN)
+               .GetAs<bool>())) {
+    table_iterator_++;
+  }
   if (table_iterator_ != table_heap_->End()) {
     *tuple = *table_iterator_;
     *rid = table_iterator_->GetRid();

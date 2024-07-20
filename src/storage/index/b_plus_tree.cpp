@@ -250,7 +250,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value, Transact
     if (IsEmpty()) {
       Page *page = buffer_pool_manager_->NewPage(&root_page_id_);
 
-      UpdateRootPageId(1);
+      // UpdateRootPageId(1);
       auto leaf_page = reinterpret_cast<LeafPage *>(page->GetData());
       // 设置本节点id    设置父节点为不合法  没有父节点    设置页面中最大键值对数量
       leaf_page->Init(root_page_id_, INVALID_PAGE_ID, leaf_max_size_);

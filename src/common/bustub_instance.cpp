@@ -181,6 +181,7 @@ auto BustubInstance::ExecuteSql(const std::string &sql, ResultWriter &writer) ->
 }
 
 auto BustubInstance::ExecuteSqlTxn(const std::string &sql, ResultWriter &writer, Transaction *txn) -> bool {
+  // std::cout << "sql: " << sql << std::endl;
   if (!sql.empty() && sql[0] == '\\') {
     // Internal meta-commands, like in `psql`.
     if (sql == "\\dt") {

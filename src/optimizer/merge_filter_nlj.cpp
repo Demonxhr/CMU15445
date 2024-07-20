@@ -5,11 +5,14 @@
 #include "common/exception.h"
 #include "common/macros.h"
 #include "execution/expressions/column_value_expression.h"
+#include "execution/expressions/comparison_expression.h"
 #include "execution/expressions/constant_value_expression.h"
 #include "execution/plans/abstract_plan.h"
 #include "execution/plans/filter_plan.h"
+#include "execution/plans/index_scan_plan.h"
 #include "execution/plans/nested_loop_join_plan.h"
 #include "execution/plans/projection_plan.h"
+#include "execution/plans/seq_scan_plan.h"
 #include "optimizer/optimizer.h"
 #include "type/type_id.h"
 
@@ -70,6 +73,27 @@ auto Optimizer::OptimizeMergeFilterNLJ(const AbstractPlanNodeRef &plan) -> Abstr
             nlj_plan.GetJoinType());
       }
     }
+    // else if (child_plan->GetType() == PlanType::SeqScan) {
+    //   const auto &seq_plan = dynamic_cast<const SeqScanPlanNode &>(*child_plan);
+    //   if (const auto *expr = dynamic_cast<const ComparisonExpression *>(filter_plan.predicate_.get());
+    //       expr != nullptr) {
+    //     if (expr->comp_type_ == ComparisonType::Equal) {
+    //       if (const auto *left_expr = dynamic_cast<const ColumnValueExpression *>(expr->children_[0].get());
+    //           left_expr != nullptr) {
+    //         if (const auto *right_expr = dynamic_cast<const ConstantValueExpression *>(expr->children_[1].get());
+    //             right_expr != nullptr) {
+    //           if (auto index = MatchIndex(seq_plan.table_name_, left_expr->GetColIdx()); index != std::nullopt) {
+    //             auto [index_oid, index_name] = *index;
+    //             auto index_plan = std::make_shared<IndexScanPlanNode>(plan->output_schema_, index_oid);
+    //             index_plan->val_ = right_expr->val_;
+    //             index_plan->table_name_ = seq_plan.table_name_;
+    //             return index_plan;
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
   return optimized_plan;
 }

@@ -205,6 +205,15 @@ auto main(int argc, char **argv) -> int {
     }
   }
 
+
+// {
+//   auto txn = bustub->txn_manager_->Begin(nullptr, bustub::IsolationLevel::REPEATABLE_READ);
+//   std::string query1 = fmt::format("SELECT count(*) FROM nft WHERE terrier = 11");
+//   std::cout << "sql: " << query1 << std::endl;
+//   bustub->ExecuteSqlTxn(query1, writer, txn);
+// }
+
+  
   std::cerr << "x: benchmark start" << std::endl;
 
   std::vector<std::thread> threads;
@@ -235,6 +244,7 @@ auto main(int argc, char **argv) -> int {
         if (enable_update) {
           auto txn = bustub->txn_manager_->Begin(nullptr, bustub::IsolationLevel::REPEATABLE_READ);
           std::string query = fmt::format("UPDATE nft SET terrier = {} WHERE id = {}", terrier_id, nft_id);
+          // std::cout << "sql: " << query << std::endl;
           if (!bustub->ExecuteSqlTxn(query, writer, txn)) {
             txn_success = false;
           }
@@ -256,6 +266,7 @@ auto main(int argc, char **argv) -> int {
           auto txn = bustub->txn_manager_->Begin(nullptr, bustub::IsolationLevel::REPEATABLE_READ);
 
           std::string query = fmt::format("DELETE FROM nft WHERE id = {}", nft_id);
+          // std::cout << "sql: " << query << std::endl;
           if (!bustub->ExecuteSqlTxn(query, writer, txn)) {
             txn_success = false;
           }
@@ -276,6 +287,7 @@ auto main(int argc, char **argv) -> int {
             txn = bustub->txn_manager_->Begin(nullptr, bustub::IsolationLevel::REPEATABLE_READ);
 
             query = fmt::format("INSERT INTO nft VALUES ({}, {})", nft_id, terrier_id);
+            // std::cout << "sql: " << query << std::endl;
             if (!bustub->ExecuteSqlTxn(query, writer, txn)) {
               txn_success = false;
             }
@@ -321,6 +333,7 @@ auto main(int argc, char **argv) -> int {
         bool txn_success = true;
 
         std::string query = fmt::format("SELECT count(*) FROM nft WHERE terrier = {}", terrier_id);
+        //std::cout << "sql: " << query << std::endl;
         if (!bustub->ExecuteSqlTxn(query, writer, txn)) {
           txn_success = false;
         }

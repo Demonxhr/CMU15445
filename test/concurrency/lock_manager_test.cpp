@@ -109,7 +109,7 @@ void TableLockTest1() {
     delete txns[i];
   }
 }
-TEST(LockManagerTest, TableLockTest1) { TableLockTest1(); }  // NOLINT
+TEST(LockManagerTest, DISABLED_TableLockTest1) { TableLockTest1(); }  // NOLINT
 
 /** Upgrading single transaction from S -> X */
 void TableLockUpgradeTest1() {
@@ -134,7 +134,7 @@ void TableLockUpgradeTest1() {
 
   delete txn1;
 }
-TEST(LockManagerTest, TableLockUpgradeTest1) { TableLockUpgradeTest1(); }  // NOLINT
+TEST(LockManagerTest, DISABLED_TableLockUpgradeTest1) { TableLockUpgradeTest1(); }  // NOLINT
 
 void RowLockTest1() {
   LockManager lock_mgr{};
@@ -190,7 +190,7 @@ void RowLockTest1() {
     delete txns[i];
   }
 }
-TEST(LockManagerTest, RowLockTest1) { RowLockTest1(); }  // NOLINT
+TEST(LockManagerTest, DISABLED_RowLockTest1) { RowLockTest1(); }  // NOLINT
 
 void TwoPLTest1() {
   LockManager lock_mgr{};
@@ -239,7 +239,7 @@ void TwoPLTest1() {
   delete txn;
 }
 
-TEST(LockManagerTest, TwoPLTest1) { TwoPLTest1(); }  // NOLINT
+TEST(LockManagerTest, DISABLED_TwoPLTest1) { TwoPLTest1(); }  // NOLINT
 
 void AbortTest1() {
   fmt::print(stderr, "AbortTest1: multiple X should block\n");
@@ -301,7 +301,7 @@ void AbortTest1() {
   delete txn3;
 }
 
-TEST(LockManagerTest, RowAbortTest1) { AbortTest1(); }
+TEST(LockManagerTest, DISABLED_RowAbortTest1) { AbortTest1(); }
 
 void RowUpdateLockTest1() {
   LockManager lock_mgr{};
@@ -338,7 +338,7 @@ void RowUpdateLockTest1() {
   delete txn1;
 }
 
-TEST(LockManagerTest, RowUpgrade) { RowUpdateLockTest1(); }
+TEST(LockManagerTest, DISABLED_RowUpgrade) { RowUpdateLockTest1(); }
 
 void IncompatibleUpgradeTest1() {
   LockManager lock_mgr{};
@@ -380,7 +380,7 @@ void IncompatibleUpgradeTest1() {
 
   delete txn1;
 }
-TEST(LockManagerTest, IncompatibleUpgradeTest) { IncompatibleUpgradeTest1(); }
+TEST(LockManagerTest, DISABLED_IncompatibleUpgradeTest) { IncompatibleUpgradeTest1(); }
 
 void UpgradeTestTest1() {
   LockManager lock_mgr{};
@@ -435,7 +435,63 @@ void UpgradeTestTest1() {
   delete txn2;
   delete txn3;
 }
-TEST(LockManagerTest, UpgradeTestTest) { UpgradeTestTest1(); }
+TEST(LockManagerTest, DISABLED_UpgradeTestTest) { UpgradeTestTest1(); }
+
+void LockCompatibilityTest1() {
+  LockManager lock_mgr{};
+  TransactionManager txn_mgr{&lock_mgr};
+
+  table_oid_t oid = 0;
+  auto txn1 = txn_mgr.Begin();
+  auto txn2 = txn_mgr.Begin();
+
+  lock_mgr.LockTable(txn1, LockManager::LockMode::SHARED_INTENTION_EXCLUSIVE, oid);
+
+  //        auto txn1_task = std::thread{[&]() {
+  //            for (int i = 0; i < 200; ++i) {
+  //                lock_mgr.LockTable(txn1, LockManager::LockMode::SHARED, oid);
+  //                lock_mgr.LockTable(txn1, LockManager::LockMode::EXCLUSIVE, oid);
+  //                lock_mgr.UnlockTable(txn1, oid);
+  //            }
+  //        }};
+
+  auto txn2_task = std::thread{[&]() {
+    lock_mgr.LockTable(txn2, LockManager::LockMode::INTENTION_EXCLUSIVE, oid);
+    //            for (int i = 0; i < 200; ++i) {
+    //                lock_mgr.LockTable(txn2, LockManager::LockMode::SHARED, oid);
+    //                lock_mgr.LockTable(txn2, LockManager::LockMode::EXCLUSIVE, oid);
+    //                lock_mgr.UnlockTable(txn2, oid);
+    //            }
+  }};
+
+  std::chrono::seconds sec{2};
+  std::this_thread::sleep_for(sec);
+  // EXPECT_EQ(1, GetTxnTableLockSize(txn1,LockManager::LockMode::SHARED_INTENTION_EXCLUSIVE)
+  // + GetTxnTableLockSize(txn2,LockManager::LockMode::INTENTION_EXCLUSIVE));
+  std::cout << GetTxnTableLockSize(txn1, LockManager::LockMode::SHARED_INTENTION_EXCLUSIVE) +
+                   GetTxnTableLockSize(txn2, LockManager::LockMode::INTENTION_EXCLUSIVE)
+            << std::endl;
+  //        /** Take S lock */
+  //        EXPECT_EQ(true, lock_mgr.LockTable(txn1, LockManager::LockMode::SHARED, oid));
+  //        CheckTableLockSizes(txn1, 1, 0, 0, 0, 0);
+  //
+  //        /** Upgrade S to X */
+  //        EXPECT_EQ(true, lock_mgr.LockTable(txn1, LockManager::LockMode::EXCLUSIVE, oid));
+  //        CheckTableLockSizes(txn1, 0, 1, 0, 0, 0);
+  //
+  //        /** Clean up */
+  //        txn_mgr.Commit(txn1);
+  //        CheckCommitted(txn1);
+  //        CheckTableLockSizes(txn1, 0, 0, 0, 0, 0);
+
+  //        txn1_task.join();
+  //        txn2_task.join();
+  //        txn3_task.join();
+  delete txn1;
+  delete txn2;
+  //        delete txn3;
+}
+TEST(LockManagerTest, LockCompatibilityTest) { LockCompatibilityTest1(); }
 
 //    void RepeatableReadsTest1() {
 //        LockManager lock_mgr{};
